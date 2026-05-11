@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fluxo de Caixa - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Fluxo de Caixa</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html" class="active">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>📊 Fluxo de Caixa</h1>
+            <p>Acompanhe receitas, despesas, saldo e evolução mês a mês.</p>
+        </header>
+
+        <section class="grid grid-3">
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=80" alt="Fluxo financeiro">
+                <div class="image-card-content">
+                    <h3>💰 Receitas</h3>
+                    <p>Entradas financeiras registradas no sistema.</p>
+                </div>
+            </div>
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80" alt="Despesas">
+                <div class="image-card-content">
+                    <h3>💸 Despesas</h3>
+                    <p>Gastos registrados e impacto no gatilho financeiro.</p>
+                </div>
+            </div>
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&w=900&q=80" alt="Gráfico financeiro">
+                <div class="image-card-content">
+                    <h3>📈 Evolução</h3>
+                    <p>Gráfico mensal de saldo, receitas e despesas.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="grid grid-3">
+
+            <div class="stat-card">
+                <div class="stat-label">Receitas Totais</div>
+                <div class="stat-value" id="fluxoReceitas">R$ 0,00</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Despesas Totais</div>
+                <div class="stat-value" id="fluxoDespesas">R$ 0,00</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Saldo Geral</div>
+                <div class="stat-value" id="fluxoSaldo">R$ 0,00</div>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2>📈 Gráfico mês a mês</h2>
+            <p>
+                Azul = receitas, vermelho = despesas, verde/laranja = saldo.
+            </p>
+
+            <br>
+
+            <canvas id="graficoFluxo" width="1000" height="420" style="width:100%; background:white; border-radius:16px;"></canvas>
+        </section>
+
+        <section class="card">
+            <h2>Resumo Mensal</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Mês/Ano</th>
+                        <th>Receitas</th>
+                        <th>Despesas</th>
+                        <th>Saldo</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaFluxoMensal"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    function atualizarCardsFluxo() {
+      const fluxo = calcularFluxoCaixaTotal();
+
+      document.getElementById("fluxoReceitas").textContent = moeda(fluxo.receitas);
+      document.getElementById("fluxoDespesas").textContent = moeda(fluxo.despesas);
+      document.getElementById("fluxoSaldo").textContent = moeda(fluxo.saldo);
+    }
+
+    function renderizarTabelaFluxo() {
+      const dados = calcularFluxoMensal();
+      const lista = document.getElementById("listaFluxoMensal");
+
+      lista.innerHTML = "";
+
+      if (dados.length === 0) {
+        lista.innerHTML = `
+          <tr>
+            <td colspan="5">Nenhuma receita ou despesa registrada ainda.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      dados.forEach(function(item) {
+        const status = item.saldo >= 0 ? "🟢 Positivo" : "🔴 Negativo";
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${item.mesAno}</td>
+          <td>${moeda(item.receitas)}</td>
+          <td>${moeda(item.despesas)}</td>
+          <td>${moeda(item.saldo)}</td>
+          <td>${status}</td>
+        `;
+
+        lista.appendChild(tr);
+      });
+    }
+
+    function desenharGraficoFluxo() {
+      const canvas = document.getElementById("graficoFluxo");
+      const ctx = canvas.getContext("2d");
+
+      const dados = calcularFluxoMensal();
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (dados.length === 0) {
+        ctx.fillStyle = "#64748b";
+        ctx.font = "22px Segoe UI";
+        ctx.fillText("Nenhum dado registrado ainda.", 40, 80);
+        return;
+      }
+
+      const padding = 60;
+      const chartWidth = canvas.width - padding * 2;
+      const chartHeight = canvas.height - padding * 2;
+
+      const maiorValor = Math.max(
+        ...dados.map(item => Math.max(item.receitas, item.despesas, Math.abs(item.saldo))),
+        1
+      );
+
+      const larguraGrupo = chartWidth / dados.length;
+      const larguraBarra = Math.min(42, larguraGrupo / 5);
+
+      ctx.strokeStyle = "#cbd5e1";
+      ctx.lineWidth = 1;
+
+      for (let i = 0; i <= 5; i++) {
+        const y = padding + (chartHeight / 5) * i;
+
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(canvas.width - padding, y);
+        ctx.stroke();
+      }
+
+      dados.forEach(function(item, index) {
+        const xBase = padding + index * larguraGrupo + larguraGrupo / 2;
+        const yBase = canvas.height - padding;
+
+        const hReceita = (item.receitas / maiorValor) * chartHeight;
+        const hDespesa = (item.despesas / maiorValor) * chartHeight;
+        const hSaldo = (Math.abs(item.saldo) / maiorValor) * chartHeight;
+
+        // Receita
+        ctx.fillStyle = "#2563eb";
+        ctx.fillRect(xBase - larguraBarra * 1.8, yBase - hReceita, larguraBarra, hReceita);
+
+        // Despesa
+        ctx.fillStyle = "#dc2626";
+        ctx.fillRect(xBase - larguraBarra * 0.4, yBase - hDespesa, larguraBarra, hDespesa);
+
+        // Saldo
+        ctx.fillStyle = item.saldo >= 0 ? "#16a34a" : "#f97316";
+        ctx.fillRect(xBase + larguraBarra, yBase - hSaldo, larguraBarra, hSaldo);
+
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "13px Segoe UI";
+        ctx.textAlign = "center";
+        ctx.fillText(item.mesAno, xBase, yBase + 24);
+      });
+
+      // Legenda
+      ctx.textAlign = "left";
+      ctx.font = "15px Segoe UI";
+
+      ctx.fillStyle = "#2563eb";
+      ctx.fillRect(padding, 20, 14, 14);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText("Receitas", padding + 22, 33);
+
+      ctx.fillStyle = "#dc2626";
+      ctx.fillRect(padding + 120, 20, 14, 14);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText("Despesas", padding + 142, 33);
+
+      ctx.fillStyle = "#16a34a";
+      ctx.fillRect(padding + 250, 20, 14, 14);
+      ctx.fillStyle = "#0f172a";
+      ctx.fillText("Saldo", padding + 272, 33);
+    }
+
+    atualizarCardsFluxo();
+    renderizarTabelaFluxo();
+    desenharGraficoFluxo();
+</script>
+
+</body>
+</html>

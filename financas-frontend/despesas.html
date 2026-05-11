@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Despesas - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Controle de gastos</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html" class="active">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>💸 Despesas</h1>
+            <p>Registre, edite ou apague despesas separadas por usuário logado.</p>
+        </header>
+
+        <section class="grid grid-4">
+            <div class="stat-card">
+                <div class="stat-label">Total de Despesas</div>
+                <div class="stat-value" id="totalDespesas">R$ 0,00</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Gatilho Atual</div>
+                <div class="stat-value" id="gatilhoAtual">Normal</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Investimento</div>
+                <div class="stat-value" id="investimentoAtual">30%</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Vida</div>
+                <div class="stat-value" id="vidaAtual">60%</div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 id="tituloFormularioDespesa">Nova Despesa</h2>
+
+            <form id="formDespesa">
+
+                <input type="hidden" id="despesaEditandoId">
+
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label>Data da despesa</label>
+                        <input type="date" id="dataDespesa">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="descricaoDespesa" placeholder="Ex: mercado, aluguel, cartão">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Valor</label>
+                        <input type="number" id="valorDespesa" step="0.01" placeholder="Ex: 250">
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <input type="text" id="categoriaDespesa" placeholder="Ex: alimentação, moradia, transporte">
+                    </div>
+
+                    <div class="form-group">
+                        <label>É essencial?</label>
+                        <select id="essencialDespesa">
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary" id="btnSalvarDespesa">
+                        Registrar Despesa
+                    </button>
+
+                    <button type="button" class="btn btn-outline" onclick="cancelarEdicaoDespesa()">
+                        Cancelar Edição
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Despesas Registradas</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Essencial</th>
+                        <th>Valor</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaDespesas"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    const formDespesa = document.getElementById("formDespesa");
+
+    function dataAtualInput() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function formatarDataTabela(data) {
+      if (!data) return hojeBR();
+
+      if (data.includes("-")) {
+        const partes = data.split("-");
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+
+      return data;
+    }
+
+    function criarDespesa(data, descricao, valor, categoria, essencial, idExistente) {
+      return {
+        id: idExistente || Date.now(),
+        data,
+        descricao,
+        valor: Number(valor),
+        categoria: categoria || "Sem categoria",
+        essencial: essencial || "sim"
+      };
+    }
+
+    function atualizarTelaDespesas() {
+      const despesas = obterDespesas();
+      const total = calcularTotalDespesas();
+      const gatilho = atualizarGatilhoPelasDespesas();
+
+      document.getElementById("totalDespesas").textContent = moeda(total);
+      document.getElementById("gatilhoAtual").textContent = gatilho.nome;
+      document.getElementById("investimentoAtual").textContent = gatilho.investimento + "%";
+      document.getElementById("vidaAtual").textContent = gatilho.vida + "%";
+
+      const lista = document.getElementById("listaDespesas");
+      lista.innerHTML = "";
+
+      if (despesas.length === 0) {
+        lista.innerHTML = `
+          <tr>
+            <td colspan="6">Nenhuma despesa registrada para este usuário.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      despesas.forEach(function(despesa) {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${formatarDataTabela(despesa.data)}</td>
+          <td>${despesa.descricao}</td>
+          <td>${despesa.categoria}</td>
+          <td>${despesa.essencial === "sim" ? "✅ Sim" : "⚠️ Não"}</td>
+          <td>${moeda(despesa.valor)}</td>
+          <td>
+            <button class="btn btn-outline" onclick="editarDespesa(${despesa.id})">Editar</button>
+            <button class="btn btn-danger" onclick="apagarDespesa(${despesa.id})">Apagar</button>
+          </td>
+        `;
+
+        lista.appendChild(tr);
+      });
+    }
+
+    formDespesa.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const idEditando = document.getElementById("despesaEditandoId").value;
+      const data = document.getElementById("dataDespesa").value;
+      const descricao = document.getElementById("descricaoDespesa").value.trim();
+      const valor = Number(document.getElementById("valorDespesa").value);
+      const categoria = document.getElementById("categoriaDespesa").value.trim();
+      const essencial = document.getElementById("essencialDespesa").value;
+
+      if (!data) {
+        alert("Informe a data da despesa.");
+        return;
+      }
+
+      if (!descricao || !valor || valor <= 0) {
+        alert("Preencha a descrição e o valor da despesa.");
+        return;
+      }
+
+      const despesas = obterDespesas();
+
+      if (idEditando) {
+        const id = Number(idEditando);
+        const despesaAtualizada = criarDespesa(data, descricao, valor, categoria, essencial, id);
+
+        const atualizadas = despesas.map(function(despesa) {
+          return despesa.id === id ? despesaAtualizada : despesa;
+        });
+
+        salvarDespesas(atualizadas);
+      } else {
+        despesas.push(criarDespesa(data, descricao, valor, categoria, essencial));
+        salvarDespesas(despesas);
+      }
+
+      cancelarEdicaoDespesa();
+      atualizarTelaDespesas();
+    });
+
+    function editarDespesa(id) {
+      const despesas = obterDespesas();
+
+      const despesa = despesas.find(function(item) {
+        return item.id === id;
+      });
+
+      if (!despesa) return;
+
+      document.getElementById("despesaEditandoId").value = despesa.id;
+      document.getElementById("dataDespesa").value = despesa.data;
+      document.getElementById("descricaoDespesa").value = despesa.descricao;
+      document.getElementById("valorDespesa").value = despesa.valor;
+      document.getElementById("categoriaDespesa").value = despesa.categoria;
+      document.getElementById("essencialDespesa").value = despesa.essencial;
+
+      document.getElementById("tituloFormularioDespesa").textContent = "Editar Despesa";
+      document.getElementById("btnSalvarDespesa").textContent = "Salvar Alterações";
+    }
+
+    function apagarDespesa(id) {
+      if (!confirm("Deseja apagar esta despesa?")) return;
+
+      const despesas = obterDespesas();
+
+      const filtradas = despesas.filter(function(despesa) {
+        return despesa.id !== id;
+      });
+
+      salvarDespesas(filtradas);
+      atualizarTelaDespesas();
+    }
+
+    function cancelarEdicaoDespesa() {
+      formDespesa.reset();
+      document.getElementById("despesaEditandoId").value = "";
+      document.getElementById("dataDespesa").value = dataAtualInput();
+      document.getElementById("tituloFormularioDespesa").textContent = "Nova Despesa";
+      document.getElementById("btnSalvarDespesa").textContent = "Registrar Despesa";
+    }
+
+    document.getElementById("dataDespesa").value = dataAtualInput();
+    atualizarTelaDespesas();
+</script>
+
+</body>
+</html>

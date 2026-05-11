@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Simulação - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Simulações financeiras</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html" class="active">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>🧮 Simulação Constitucional</h1>
+            <p>Simule diferentes divisões da renda conforme os gatilhos.</p>
+        </header>
+
+        <section class="card">
+            <h2>Simular Renda</h2>
+
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label>Renda recebida</label>
+                    <input type="number" id="rendaSimulada" step="0.01" placeholder="Ex: 3000">
+                </div>
+
+                <div class="form-group">
+                    <label>Estado Constitucional</label>
+                    <select id="estado">
+                        <option value="normal">Normal - 30/10/60</option>
+                        <option value="gatilho1">Gatilho 1 - 50/10/40</option>
+                        <option value="gatilho2">Gatilho 2 - 70/10/20</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="simular()">
+                Simular
+            </button>
+        </section>
+
+        <section class="grid grid-3" id="resultadoSimulacao" style="display:none;">
+            <div class="stat-card">
+                <div class="stat-label">Investimento / Correção</div>
+                <div class="stat-value" id="simInvestimento">R$ 0,00</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Reserva Flex</div>
+                <div class="stat-value" id="simReserva">R$ 0,00</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Vida</div>
+                <div class="stat-value" id="simVida">R$ 0,00</div>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    function moeda(valor) {
+      return Number(valor).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function simular() {
+      const renda = Number(document.getElementById("rendaSimulada").value);
+      const estado = document.getElementById("estado").value;
+
+      if (!renda || renda <= 0) {
+        alert("Digite uma renda válida.");
+        return;
+      }
+
+      let investimento = 0;
+      let reserva = 0.10;
+      let vida = 0;
+
+      if (estado === "normal") {
+        investimento = 0.30;
+        vida = 0.60;
+      }
+
+      if (estado === "gatilho1") {
+        investimento = 0.50;
+        vida = 0.40;
+      }
+
+      if (estado === "gatilho2") {
+        investimento = 0.70;
+        vida = 0.20;
+      }
+
+      document.getElementById("resultadoSimulacao").style.display = "grid";
+      document.getElementById("simInvestimento").textContent = moeda(renda * investimento);
+      document.getElementById("simReserva").textContent = moeda(renda * reserva);
+      document.getElementById("simVida").textContent = moeda(renda * vida);
+    }
+</script>
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+</body>
+</html>

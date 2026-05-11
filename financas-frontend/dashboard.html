@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Reforma Constitucional de Liquidez</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="active">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="dashboard-hero">
+            <h1>📊 Dashboard Constitucional</h1>
+            <p>
+                Sistema baseado na Reforma Constitucional de Liquidez.
+                Aqui você acompanha gatilhos, Termômetro Financeiro Pessoal,
+                Estado de Emergência, receitas, despesas, Reserva Flex e disciplina patrimonial.
+            </p>
+
+            <div class="hero-tags">
+                <span class="hero-tag">💵 Recebeu</span>
+                <span class="hero-tag">🧩 Separou</span>
+                <span class="hero-tag">📈 Investiu</span>
+                <span class="hero-tag">🧘 Depois gastou</span>
+            </div>
+        </section>
+
+        <section class="grid grid-3">
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1554224154-22dec7ec8818?auto=format&fit=crop&w=900&q=80" alt="Planejamento financeiro">
+                <div class="image-card-content">
+                    <h3>📊 Planejamento</h3>
+                    <p>Organize receitas, despesas, gatilhos e decisões financeiras.</p>
+                </div>
+            </div>
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1565514020179-026b92b84bb6?auto=format&fit=crop&w=900&q=80" alt="Investimentos">
+                <div class="image-card-content">
+                    <h3>📈 Investimentos</h3>
+                    <p>Controle renda fixa, FIIs, ETFs e crescimento patrimonial.</p>
+                </div>
+            </div>
+
+            <div class="image-card">
+                <img src="https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=900&q=80" alt="Reserva financeira">
+                <div class="image-card-content">
+                    <h3>🛡️ Reserva Flex</h3>
+                    <p>Proteja sua liquidez e registre o uso consciente da reserva.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="grid grid-4">
+
+            <div class="stat-card">
+                <div class="stat-label">Estado Financeiro</div>
+                <div class="stat-value" id="gatilhoNome">😌 Normal</div>
+                <div class="stat-helper" id="gatilhoCondicao">Gastos &lt; R$ 2.250</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Investimentos</div>
+                <div class="stat-value" id="percentualInvestimento">30%</div>
+                <div class="stat-helper">Separação constitucional</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Reserva Flex</div>
+                <div class="stat-value" id="percentualReserva">10%</div>
+                <div class="stat-helper">Proteção e liquidez</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Vida</div>
+                <div class="stat-value" id="percentualVida">60%</div>
+                <div class="stat-helper">Gastos essenciais e rotina</div>
+            </div>
+
+        </section>
+
+        <section class="grid grid-3">
+
+            <div class="visual-card">
+                <div class="visual-icon">🌡️</div>
+                <div>
+                    <h3>Termômetro Financeiro</h3>
+                    <p>Calcula o TFP e declara emergência automaticamente quando necessário.</p>
+                </div>
+            </div>
+
+            <div class="visual-card">
+                <div class="visual-icon">🚨</div>
+                <div>
+                    <h3>Emergência Separada</h3>
+                    <p>Emergência não é gatilho. Ela é ativada por TFP ou déficit mensal.</p>
+                </div>
+            </div>
+
+            <div class="visual-card">
+                <div class="visual-icon">📘</div>
+                <div>
+                    <h3>Livro de Ocorrências</h3>
+                    <p>Registra desvios, medidas extraordinárias e ativações de emergência.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2>📌 Resumo Atual</h2>
+
+            <div id="resumoAtual" class="status-box emergency-inactive">
+                Carregando resumo...
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>🚀 Atalhos Constitucionais</h2>
+            <p>
+                Acesse rapidamente as principais áreas do sistema.
+            </p>
+
+            <br>
+
+            <div class="actions">
+                <a href="receitas.html" class="btn btn-primary">💵 Registrar Receita</a>
+                <a href="despesas.html" class="btn btn-secondary">💸 Registrar Despesa</a>
+                <a href="termometro.html" class="btn btn-outline">🌡️ Calcular TFP</a>
+                <a href="emergencia.html" class="btn btn-outline">🚨 Ver Emergência</a>
+                <a href="constituicao.html" class="btn btn-outline">📜 Constituição</a>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    function carregarDashboard() {
+      const gatilho = obterGatilhoAtivo();
+      const emergencia = obterEstadoEmergencia();
+      const ultimoTFP = lerStorage("ultimoTFP", null);
+      const totalDespesas = calcularTotalDespesas();
+
+      document.getElementById("gatilhoNome").textContent = gatilho.nome;
+      document.getElementById("gatilhoCondicao").textContent = gatilho.condicao;
+      document.getElementById("percentualInvestimento").textContent = gatilho.investimento + "%";
+      document.getElementById("percentualReserva").textContent = gatilho.reservaFlex + "%";
+      document.getElementById("percentualVida").textContent = gatilho.vida + "%";
+
+      const resumo = document.getElementById("resumoAtual");
+
+      if (emergencia.ativo) {
+        resumo.className = "status-box emergency-active";
+        resumo.innerHTML = `
+          🚨 <strong>Estado de Emergência Financeira ativo</strong><br>
+          Origem: ${emergencia.origem}<br>
+          Motivo: ${emergencia.motivo}<br>
+          TFP: ${emergencia.tfp ? percentual(emergencia.tfp) : "Não informado"}<br>
+          Déficit/Superávit: ${emergencia.deficit ? percentual(emergencia.deficit) : "Não informado"}<br><br>
+          Efeitos: suspensão de gastos não essenciais, proibição de novos parcelamentos
+          e prioridade máxima para liquidez.
+        `;
+      } else {
+        resumo.className = "status-box emergency-inactive";
+        resumo.innerHTML = `
+          ✅ <strong>Estado de Emergência inativo</strong><br>
+          Estado financeiro atual: ${gatilho.nome}<br>
+          Total de despesas registradas: ${moeda(totalDespesas)}<br>
+          Último TFP: ${ultimoTFP ? percentual(ultimoTFP.tfp) + " - " + ultimoTFP.classificacao : "Ainda não calculado"}
+        `;
+      }
+    }
+
+    carregarDashboard();
+</script>
+
+</body>
+</html>

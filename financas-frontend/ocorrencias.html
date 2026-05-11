@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ocorrências - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Livro de Ocorrências</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html" class="active">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>⚖️ Livro de Ocorrências</h1>
+            <p>Registre desvios, aprendizados e planos de correção.</p>
+        </header>
+
+        <div class="alert alert-warning">
+            Ocorrência não é punição. É registro para aprendizado e correção.
+        </div>
+
+        <section class="card">
+            <h2>Nova Ocorrência</h2>
+
+            <form id="formOcorrencia">
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <select id="tipoOcorrencia">
+                            <option value="Cartão de crédito">Cartão de crédito</option>
+                            <option value="Reserva Flex">Reserva Flex</option>
+                            <option value="Gasto impulsivo">Gasto impulsivo</option>
+                            <option value="Falha de investimento">Falha de investimento</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Valor envolvido</label>
+                        <input type="number" id="valorOcorrencia" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="descricaoOcorrencia"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Plano de correção</label>
+                    <textarea id="planoCorrecao"></textarea>
+                </div>
+
+                <button class="btn btn-primary" type="submit">
+                    Registrar Ocorrência
+                </button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Ocorrências Registradas</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Descrição</th>
+                        <th>Plano</th>
+                        <th>Ação</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaOcorrencias"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    const form = document.getElementById("formOcorrencia");
+    const lista = document.getElementById("listaOcorrencias");
+
+    let ocorrencias = JSON.parse(localStorage.getItem("ocorrencias")) || [];
+
+    function moeda(valor) {
+      return Number(valor).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function salvar() {
+      localStorage.setItem("ocorrencias", JSON.stringify(ocorrencias));
+    }
+
+    function renderizar() {
+      lista.innerHTML = "";
+
+      ocorrencias.forEach(function(ocorrencia, index) {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${ocorrencia.data}</td>
+          <td><span class="badge badge-warning">${ocorrencia.tipo}</span></td>
+          <td>${moeda(ocorrencia.valor)}</td>
+          <td>${ocorrencia.descricao}</td>
+          <td>${ocorrencia.plano}</td>
+          <td>
+            <button class="btn btn-danger" onclick="remover(${index})">
+              Excluir
+            </button>
+          </td>
+        `;
+
+        lista.appendChild(tr);
+      });
+    }
+
+    function remover(index) {
+      if (!confirm("Deseja excluir esta ocorrência?")) return;
+
+      ocorrencias.splice(index, 1);
+      salvar();
+      renderizar();
+    }
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const novaOcorrencia = {
+        data: new Date().toLocaleDateString("pt-BR"),
+        tipo: document.getElementById("tipoOcorrencia").value,
+        valor: Number(document.getElementById("valorOcorrencia").value),
+        descricao: document.getElementById("descricaoOcorrencia").value,
+        plano: document.getElementById("planoCorrecao").value
+      };
+
+      ocorrencias.push(novaOcorrencia);
+      salvar();
+      renderizar();
+      form.reset();
+    });
+
+    renderizar();
+</script>
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+</body>
+</html>

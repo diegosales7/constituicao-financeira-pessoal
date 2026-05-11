@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Receitas - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Recebeu → Separou</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html" class="active">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>💵 Receitas</h1>
+            <p>Registre, edite ou apague valores recebidos. A divisão constitucional é calculada automaticamente.</p>
+        </header>
+
+        <section class="grid grid-4">
+
+            <div class="stat-card">
+                <div class="stat-label">Receitas Totais</div>
+                <div class="stat-value" id="totalReceitas">R$ 0,00</div>
+                <div class="stat-helper">Entradas registradas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Investimento/Liquidez</div>
+                <div class="stat-value" id="totalInvestimentos">R$ 0,00</div>
+                <div class="stat-helper">Conforme gatilho ou emergência</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Reserva Flex</div>
+                <div class="stat-value" id="totalReserva">R$ 0,00</div>
+                <div class="stat-helper">10% das receitas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Vida</div>
+                <div class="stat-value" id="totalVida">R$ 0,00</div>
+                <div class="stat-helper">Parcela disponível para uso</div>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2 id="tituloFormulario">Nova Receita</h2>
+
+            <form id="formReceita">
+
+                <input type="hidden" id="receitaEditandoId">
+
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label>Data da receita</label>
+                        <input type="date" id="dataReceita">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select id="categoriaReceita" required>
+                            <option value="">Selecione uma categoria</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Valor recebido</label>
+                        <input type="number" id="valorReceita" step="0.01" placeholder="Ex: 1500">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" id="descricaoReceita" placeholder="Ex: Salário, obra, renda extra">
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary" id="btnSalvarReceita">
+                        Registrar Receita
+                    </button>
+
+                    <button type="button" class="btn btn-outline" onclick="cancelarEdicaoReceita()">
+                        Cancelar Edição
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <section class="card" id="resultadoReceita" style="display:none;">
+            <h2>Divisão Constitucional</h2>
+            <div id="textoResultadoReceita"></div>
+        </section>
+
+        <section class="card">
+            <h2>Receitas Registradas</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Gatilho</th>
+                        <th>Investimento/Liquidez</th>
+                        <th>Reserva Flex</th>
+                        <th>Vida</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaReceitas"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    const formReceita = document.getElementById("formReceita");
+
+    function dataAtualInput() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function formatarDataTabela(data) {
+      if (!data) return hojeBR();
+
+      if (data.includes("-")) {
+        const partes = data.split("-");
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+
+      return data;
+    }
+
+    function obterReceitasLocal() {
+      return lerStorage("receitas", []);
+    }
+
+    function salvarReceitasLocal(receitas) {
+      salvarStorage("receitas", receitas);
+    }
+
+    function criarReceitaCalculada(data, descricao, valor, idExistente) {
+      const divisao = calcularDivisaoReceita(valor);
+
+      return {
+        id: idExistente || Date.now(),
+        data,
+        descricao,
+        valor: Number(valor),
+        gatilho: divisao.gatilho.nome,
+        investimento: divisao.investimento,
+        reservaFlex: divisao.reservaFlex,
+        vida: divisao.vida,
+        destinoInvestimento: divisao.destinoInvestimento,
+        emergenciaAtiva: divisao.emergenciaAtiva
+      };
+    }
+
+    function atualizarResumoReceitas() {
+      const receitas = obterReceitasLocal();
+
+      let total = 0;
+      let investimentos = 0;
+      let reserva = 0;
+      let vida = 0;
+
+      receitas.forEach(function(receita) {
+        total += Number(receita.valor || 0);
+        investimentos += Number(receita.investimento || 0);
+        reserva += Number(receita.reservaFlex || 0);
+        vida += Number(receita.vida || 0);
+      });
+
+      document.getElementById("totalReceitas").textContent = moeda(total);
+      document.getElementById("totalInvestimentos").textContent = moeda(investimentos);
+      document.getElementById("totalReserva").textContent = moeda(reserva);
+      document.getElementById("totalVida").textContent = moeda(vida);
+    }
+
+    function renderizarReceitas() {
+      const receitas = obterReceitasLocal();
+      const lista = document.getElementById("listaReceitas");
+
+      lista.innerHTML = "";
+
+      if (receitas.length === 0) {
+        lista.innerHTML = `
+          <tr>
+            <td colspan="8">Nenhuma receita registrada ainda.</td>
+          </tr>
+        `;
+        atualizarResumoReceitas();
+        return;
+      }
+
+      receitas.forEach(function(receita) {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${formatarDataTabela(receita.data)}</td>
+          <td>${receita.descricao}</td>
+          <td>${moeda(receita.valor)}</td>
+          <td>${receita.gatilho}</td>
+          <td>${moeda(receita.investimento)}</td>
+          <td>${moeda(receita.reservaFlex)}</td>
+          <td>${moeda(receita.vida)}</td>
+          <td>
+            <button class="btn btn-outline" onclick="editarReceita(${receita.id})">Editar</button>
+            <button class="btn btn-danger" onclick="apagarReceita(${receita.id})">Apagar</button>
+          </td>
+        `;
+
+        lista.appendChild(tr);
+      });
+
+      atualizarResumoReceitas();
+    }
+
+    function mostrarResultadoReceita(receita) {
+      document.getElementById("resultadoReceita").style.display = "block";
+
+      document.getElementById("textoResultadoReceita").innerHTML = `
+        <div class="grid grid-4">
+          <div class="stat-card">
+            <div class="stat-label">Receita</div>
+            <div class="stat-value">${moeda(receita.valor)}</div>
+            <div class="stat-helper">${formatarDataTabela(receita.data)} - ${receita.descricao}</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">${receita.destinoInvestimento}</div>
+            <div class="stat-value">${moeda(receita.investimento)}</div>
+            <div class="stat-helper">${receita.gatilho}</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Reserva Flex</div>
+            <div class="stat-value">${moeda(receita.reservaFlex)}</div>
+            <div class="stat-helper">10% obrigatório</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Vida</div>
+            <div class="stat-value">${moeda(receita.vida)}</div>
+            <div class="stat-helper">Parcela de uso pessoal</div>
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          Regra aplicada: <strong>${receita.gatilho}</strong><br>
+          Emergência: ${receita.emergenciaAtiva ? "🚨 Ativa — investimento direcionado para liquidez" : "✅ Inativa — aporte normal"}
+        </div>
+      `;
+    }
+
+    formReceita.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const idEditando = document.getElementById("receitaEditandoId").value;
+      const data = document.getElementById("dataReceita").value;
+      const categoria = document.getElementById("categoriaReceita").value;
+      const descricao = document.getElementById("descricaoReceita").value.trim();
+      const valor = Number(document.getElementById("valorReceita").value);
+
+      if (!data) {
+        alert("Informe a data da receita.");
+        return;
+      }
+
+      if (!categoria) {
+        alert("Selecione uma categoria para a receita.");
+        return;
+      }
+
+      if (!descricao || !valor || valor <= 0) {
+        alert("Preencha a descrição e o valor da receita.");
+        return;
+      }
+
+      const receitas = obterReceitasLocal();
+
+      let receitaSalva;
+
+      if (idEditando) {
+        const id = Number(idEditando);
+
+        receitaSalva = criarReceitaCalculada(data, descricao, valor, id);
+
+        const receitasAtualizadas = receitas.map(function(receita) {
+          return receita.id === id ? receitaSalva : receita;
+        });
+
+        salvarReceitasLocal(receitasAtualizadas);
+      } else {
+        receitaSalva = criarReceitaCalculada(data, descricao, valor);
+        receitas.push(receitaSalva);
+        salvarReceitasLocal(receitas);
+      }
+
+      mostrarResultadoReceita(receitaSalva);
+      cancelarEdicaoReceita();
+      renderizarReceitas();
+    });
+
+    function editarReceita(id) {
+      const receitas = obterReceitasLocal();
+      const receita = receitas.find(function(item) {
+        return item.id === id;
+      });
+
+      if (!receita) return;
+
+      document.getElementById("receitaEditandoId").value = receita.id;
+      document.getElementById("dataReceita").value = receita.data;
+      document.getElementById("descricaoReceita").value = receita.descricao;
+      document.getElementById("valorReceita").value = receita.valor;
+
+      document.getElementById("tituloFormulario").textContent = "Editar Receita";
+      document.getElementById("btnSalvarReceita").textContent = "Salvar Alterações";
+    }
+
+    function apagarReceita(id) {
+      if (!confirm("Deseja apagar esta receita?")) return;
+
+      const receitas = obterReceitasLocal();
+      const filtradas = receitas.filter(function(receita) {
+        return receita.id !== id;
+      });
+
+      salvarReceitasLocal(filtradas);
+      renderizarReceitas();
+    }
+
+    function cancelarEdicaoReceita() {
+      formReceita.reset();
+      document.getElementById("receitaEditandoId").value = "";
+      document.getElementById("dataReceita").value = dataAtualInput();
+      document.getElementById("tituloFormulario").textContent = "Nova Receita";
+      document.getElementById("btnSalvarReceita").textContent = "Registrar Receita";
+    }
+
+    document.getElementById("dataReceita").value = dataAtualInput();
+    renderizarReceitas();
+
+    // Carregar categorias de receitas
+    carregarCategoriasReceitas();
+
+    async function carregarCategoriasReceitas() {
+      try {
+        const response = await apiRequest("/transacoes/categorias/receitas");
+        const select = document.getElementById("categoriaReceita");
+
+        response.forEach(categoria => {
+          const option = document.createElement("option");
+          option.value = categoria.value;
+          option.textContent = categoria.label;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar categorias de receitas:", error);
+        // Fallback para categorias locais se a API falhar
+        const categoriasLocais = [
+          { value: "SALARIO", label: "Salário" },
+          { value: "FREELANCER", label: "Freelancer" },
+          { value: "DIVIDENDOS", label: "Dividendos" },
+          { value: "ALUGUEL_RECEBIDO", label: "Aluguel Recebido" },
+          { value: "VENDAS", label: "Vendas" },
+          { value: "OUTRAS_RECEITAS", label: "Outras Receitas" }
+        ];
+
+        const select = document.getElementById("categoriaReceita");
+        categoriasLocais.forEach(categoria => {
+          const option = document.createElement("option");
+          option.value = categoria.value;
+          option.textContent = categoria.label;
+          select.appendChild(option);
+        });
+      }
+    }
+</script>
+
+</body>
+</html>

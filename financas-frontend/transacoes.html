@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Transações - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Extrato financeiro</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html" class="active">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>📒 Transações</h1>
+            <p>Extrato unificado de receitas e despesas registradas no sistema.</p>
+        </header>
+
+        <section class="grid grid-4">
+
+            <div class="stat-card">
+                <div class="stat-label">Receitas</div>
+                <div class="stat-value" id="totalReceitasTransacoes">R$ 0,00</div>
+                <div class="stat-helper">Total de entradas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Despesas</div>
+                <div class="stat-value" id="totalDespesasTransacoes">R$ 0,00</div>
+                <div class="stat-helper">Total de saídas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Saldo</div>
+                <div class="stat-value" id="saldoTransacoes">R$ 0,00</div>
+                <div class="stat-helper">Receitas - despesas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Quantidade</div>
+                <div class="stat-value" id="qtdTransacoes">0</div>
+                <div class="stat-helper">Total de registros</div>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2>Filtros</h2>
+
+            <div class="grid grid-3">
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="filtroTipo" onchange="renderizarTransacoes()">
+                        <option value="todos">Todos</option>
+                        <option value="receita">Receitas</option>
+                        <option value="despesa">Despesas</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mês/Ano</label>
+                    <input type="month" id="filtroMes" onchange="renderizarTransacoes()">
+                </div>
+
+                <div class="form-group">
+                    <label>Buscar descrição</label>
+                    <input type="text" id="filtroBusca" placeholder="Ex: salário, mercado..." oninput="renderizarTransacoes()">
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-outline" onclick="limparFiltros()">Limpar filtros</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Extrato</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Categoria/Gatilho</th>
+                        <th>Valor</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaTransacoes"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    function formatarDataTransacao(data) {
+      if (!data) {
+        return hojeBR();
+      }
+
+      if (data.includes("-")) {
+        const partes = data.split("-");
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+      }
+
+      return data;
+    }
+
+    function mesAnoComparacao(data) {
+      if (!data) return "";
+
+      if (data.includes("-")) {
+        const partes = data.split("-");
+        return `${partes[0]}-${partes[1]}`;
+      }
+
+      if (data.includes("/")) {
+        const partes = data.split("/");
+        return `${partes[2]}-${partes[1]}`;
+      }
+
+      return "";
+    }
+
+    function obterTransacoesUnificadas() {
+      const receitas = lerStorage("receitas", []);
+      const despesas = lerStorage("despesas", []);
+
+      const listaReceitas = receitas.map(function(receita) {
+        return {
+          id: "receita-" + receita.id,
+          data: receita.data,
+          tipo: "receita",
+          tipoLabel: "💵 Receita",
+          descricao: receita.descricao,
+          categoria: receita.gatilho || "Receita",
+          valor: Number(receita.valor || 0)
+        };
+      });
+
+      const listaDespesas = despesas.map(function(despesa) {
+        return {
+          id: "despesa-" + despesa.id,
+          data: despesa.data,
+          tipo: "despesa",
+          tipoLabel: "💸 Despesa",
+          descricao: despesa.descricao,
+          categoria: despesa.categoria || "Despesa",
+          valor: Number(despesa.valor || 0)
+        };
+      });
+
+      const todas = [...listaReceitas, ...listaDespesas];
+
+      todas.sort(function(a, b) {
+        return new Date(b.data) - new Date(a.data);
+      });
+
+      return todas;
+    }
+
+    function atualizarResumoTransacoes(transacoesFiltradas) {
+      let totalReceitas = 0;
+      let totalDespesas = 0;
+
+      transacoesFiltradas.forEach(function(item) {
+        if (item.tipo === "receita") {
+          totalReceitas += item.valor;
+        }
+
+        if (item.tipo === "despesa") {
+          totalDespesas += item.valor;
+        }
+      });
+
+      const saldo = totalReceitas - totalDespesas;
+
+      document.getElementById("totalReceitasTransacoes").textContent = moeda(totalReceitas);
+      document.getElementById("totalDespesasTransacoes").textContent = moeda(totalDespesas);
+      document.getElementById("saldoTransacoes").textContent = moeda(saldo);
+      document.getElementById("qtdTransacoes").textContent = transacoesFiltradas.length;
+    }
+
+    function renderizarTransacoes() {
+      const tipo = document.getElementById("filtroTipo").value;
+      const mes = document.getElementById("filtroMes").value;
+      const busca = document.getElementById("filtroBusca").value.toLowerCase();
+
+      let transacoes = obterTransacoesUnificadas();
+
+      if (tipo !== "todos") {
+        transacoes = transacoes.filter(function(item) {
+          return item.tipo === tipo;
+        });
+      }
+
+      if (mes) {
+        transacoes = transacoes.filter(function(item) {
+          return mesAnoComparacao(item.data) === mes;
+        });
+      }
+
+      if (busca) {
+        transacoes = transacoes.filter(function(item) {
+          return item.descricao.toLowerCase().includes(busca);
+        });
+      }
+
+      const lista = document.getElementById("listaTransacoes");
+
+      lista.innerHTML = "";
+
+      if (transacoes.length === 0) {
+        lista.innerHTML = `
+          <tr>
+            <td colspan="5">Nenhuma transação encontrada.</td>
+          </tr>
+        `;
+
+        atualizarResumoTransacoes(transacoes);
+        return;
+      }
+
+      transacoes.forEach(function(item) {
+        const tr = document.createElement("tr");
+
+        const valorFormatado = item.tipo === "receita"
+          ? moeda(item.valor)
+          : "- " + moeda(item.valor);
+
+        tr.innerHTML = `
+          <td>${formatarDataTransacao(item.data)}</td>
+          <td>${item.tipoLabel}</td>
+          <td>${item.descricao}</td>
+          <td>${item.categoria}</td>
+          <td>${valorFormatado}</td>
+        `;
+
+        lista.appendChild(tr);
+      });
+
+      atualizarResumoTransacoes(transacoes);
+    }
+
+    function limparFiltros() {
+      document.getElementById("filtroTipo").value = "todos";
+      document.getElementById("filtroMes").value = "";
+      document.getElementById("filtroBusca").value = "";
+
+      renderizarTransacoes();
+    }
+
+    renderizarTransacoes();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Emergência - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Emergência pelo TFP</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html" class="active">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>🚨 Estado de Emergência Financeira</h1>
+            <p>Separado dos gatilhos. Ativado automaticamente pelo TFP ou déficit mensal.</p>
+        </header>
+
+        <section class="card">
+            <h2>Status Atual</h2>
+            <div id="statusEmergencia"></div>
+        </section>
+
+        <section class="card">
+            <h2>🔥 Efeitos da Emergência</h2>
+
+            <ul>
+                <li>🚫 Suspensão de gastos não essenciais</li>
+                <li>💳 Proibição de novos parcelamentos</li>
+                <li>💧 Prioridade máxima para liquidez</li>
+                <li>🛡️ Reforço da Reserva Flex</li>
+                <li>📈 Valores de investimento direcionados à liquidez</li>
+                <li>📘 Registro obrigatório no Livro de Ocorrências</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>✅ Critério de Saída</h2>
+            <p>
+                O Estado de Emergência será encerrado quando o Termômetro Financeiro Pessoal
+                voltar para <strong>TFP ≥ 40%</strong>.
+            </p>
+        </section>
+
+    </main>
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    function carregarEmergencia() {
+      const emergencia = obterEstadoEmergencia();
+      const status = document.getElementById("statusEmergencia");
+
+      if (emergencia.ativo) {
+        status.innerHTML = `
+          <div class="status-box emergency-active">
+            🚨 <strong>Estado de Emergência ativo</strong><br>
+            Origem: ${emergencia.origem}<br>
+            Motivo: ${emergencia.motivo}<br>
+            Data de ativação: ${emergencia.dataAtivacao}<br>
+            TFP: ${emergencia.tfp ? percentual(emergencia.tfp) : "Não informado"}<br>
+            Déficit/Superávit: ${emergencia.deficit ? percentual(emergencia.deficit) : "Não informado"}
+          </div>
+        `;
+      } else {
+        status.innerHTML = `
+          <div class="status-box emergency-inactive">
+            ✅ <strong>Estado de Emergência inativo</strong><br>
+            O sistema está fora do estado de emergência financeira.
+          </div>
+        `;
+      }
+    }
+
+    carregarEmergencia();
+</script>
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+</body>
+</html>

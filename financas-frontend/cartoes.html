@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cartões - Constituição Financeira</title>
+
+    <link rel="stylesheet" href="./CSS/style.css">
+</head>
+<body>
+
+<div class="page">
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            💰 Constituição Financeira
+            <span>Controle de Cartões</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a href="perfil.html">👤 Perfil</a>
+            <a href="receitas.html">💵 Receitas</a>
+            <a href="despesas.html">💸 Despesas</a>
+            <a href="transacoes.html">📒 Transações</a>
+            <a href="cartoes.html" class="active">💳 Cartões</a>
+            <a href="termometro.html">🌡️ Termômetro</a>
+            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
+            <a href="emergencia.html">🚨 Emergência</a>
+            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
+            <a href="ocorrencias.html">📘 Ocorrências</a>
+            <a href="ativos.html">📈 Ativos</a>
+            <a href="constituicao.html">📜 Constituição</a>
+            <a href="simulacao.html">🧮 Simulação</a>
+            <a href="sobre.html">ℹ️ Sobre</a>
+            <a href="index.html" class="logout-link">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1>💳 Cartões de Crédito</h1>
+            <p>Cadastre cartões, registre compras e acompanhe faturas futuras.</p>
+        </header>
+
+        <section class="grid grid-3">
+
+            <div class="stat-card">
+                <div class="stat-label">Total em Cartões</div>
+                <div class="stat-value" id="totalCartoes">R$ 0,00</div>
+                <div class="stat-helper">Compras registradas</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Próxima Fatura</div>
+                <div class="stat-value" id="proximaFatura">R$ 0,00</div>
+                <div class="stat-helper">Compras do próximo mês</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Cartões Cadastrados</div>
+                <div class="stat-value" id="qtdCartoes">0</div>
+                <div class="stat-helper">Quantidade de cartões</div>
+            </div>
+
+        </section>
+
+        <section class="card">
+            <h2 id="tituloCartao">Cadastrar Cartão</h2>
+
+            <form id="formCartao">
+
+                <input type="hidden" id="cartaoEditandoId">
+
+                <div class="grid grid-4">
+                    <div class="form-group">
+                        <label>Nome do cartão</label>
+                        <input type="text" id="nomeCartao" placeholder="Ex: Nubank, Inter, Itaú">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Limite do cartão</label>
+                        <input type="number" id="limiteCartao" step="0.01" placeholder="Ex: 2000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dia de fechamento</label>
+                        <input type="number" id="fechamentoCartao" min="1" max="31" placeholder="Ex: 10">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dia de vencimento</label>
+                        <input type="number" id="vencimentoCartao" min="1" max="31" placeholder="Ex: 17">
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary" id="btnSalvarCartao">
+                        Salvar Cartão
+                    </button>
+
+                    <button type="button" class="btn btn-outline" onclick="cancelarEdicaoCartao()">
+                        Cancelar Edição
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Cartões Cadastrados</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Cartão</th>
+                        <th>Limite</th>
+                        <th>Fechamento</th>
+                        <th>Vencimento</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaCartoes"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Registrar Compra no Cartão</h2>
+
+            <form id="formCompra">
+
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label>Data da compra</label>
+                        <input type="date" id="dataCompra">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cartão</label>
+                        <select id="cartaoCompra"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="descricaoCompra" placeholder="Ex: mercado, curso, celular">
+                    </div>
+                </div>
+
+                <div class="grid grid-4">
+                    <div class="form-group">
+                        <label>Valor total</label>
+                        <input type="number" id="valorCompra" step="0.01" placeholder="Ex: 300">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Parcelas</label>
+                        <input type="number" id="parcelasCompra" min="1" value="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Mês da primeira fatura</label>
+                        <input type="month" id="mesFaturaCompra">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Enviar para próxima fatura?</label>
+                        <select id="proximaFaturaCompra">
+                            <option value="nao">Não</option>
+                            <option value="sim">Sim</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Registrar Compra
+                </button>
+
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Compras Registradas</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Cartão</th>
+                        <th>Descrição</th>
+                        <th>Valor Total</th>
+                        <th>Parcelas</th>
+                        <th>Primeira Fatura</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaCompras"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Resumo de Faturas</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th>Total da Fatura</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="listaFaturas"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="./js/constitucional.js"></script>
+<script src="./js/sessao.js"></script>
+
+<script>
+    const formCartao = document.getElementById("formCartao");
+    const formCompra = document.getElementById("formCompra");
+
+    function dataAtualInput() {
+      const hoje = new Date();
+      return hoje.toISOString().split("T")[0];
+    }
+
+    function mesAtualInput() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      return `${ano}-${mes}`;
+    }
+
+    function proximoMesInput() {
+      const hoje = new Date();
+      hoje.setMonth(hoje.getMonth() + 1);
+
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+
+      return `${ano}-${mes}`;
+    }
+
+    function formatarMesAno(valor) {
+      if (!valor) return "";
+
+      const partes = valor.split("-");
+      return `${partes[1]}/${partes[0]}`;
+    }
+
+    function somarMeses(mesAno, quantidade) {
+      const partes = mesAno.split("-");
+      const data = new Date(Number(partes[0]), Number(partes[1]) - 1, 1);
+
+      data.setMonth(data.getMonth() + quantidade);
+
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, "0");
+
+      return `${ano}-${mes}`;
+    }
+
+    function obterCartoes() {
+      return lerStorage("cartoesCredito", []);
+    }
+
+    function salvarCartoes(cartoes) {
+      salvarStorage("cartoesCredito", cartoes);
+    }
+
+    function obterCompras() {
+      return lerStorage("comprasCartao", []);
+    }
+
+    function salvarCompras(compras) {
+      salvarStorage("comprasCartao", compras);
+    }
+
+    function atualizarSelectCartoes() {
+      const cartoes = obterCartoes();
+      const select = document.getElementById("cartaoCompra");
+
+      select.innerHTML = "";
+
+      if (cartoes.length === 0) {
+        select.innerHTML = `<option value="">Cadastre um cartão primeiro</option>`;
+        return;
+      }
+
+      cartoes.forEach(function(cartao) {
+        const option = document.createElement("option");
+        option.value = cartao.id;
+        option.textContent = cartao.nome;
+        select.appendChild(option);
+      });
+    }
+
+    function renderizarCartoes() {
+      const cartoes = obterCartoes();
+      const lista = document.getElementById("listaCartoes");
+
+      lista.innerHTML = "";
+
+      if (cartoes.length === 0) {
+        lista.innerHTML = `<tr><td colspan="5">Nenhum cartão cadastrado.</td></tr>`;
+      }
+
+      cartoes.forEach(function(cartao) {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${cartao.nome}</td>
+          <td>${moeda(cartao.limite)}</td>
+          <td>Dia ${cartao.fechamento}</td>
+          <td>Dia ${cartao.vencimento}</td>
+          <td>
+            <button class="btn btn-outline" onclick="editarCartao(${cartao.id})">Editar</button>
+            <button class="btn btn-danger" onclick="apagarCartao(${cartao.id})">Apagar</button>
+          </td>
+        `;
+
+        lista.appendChild(tr);
+      });
+
+      document.getElementById("qtdCartoes").textContent = cartoes.length;
+
+      atualizarSelectCartoes();
+    }
+
+    formCartao.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const idEditando = document.getElementById("cartaoEditandoId").value;
+
+      const nome = document.getElementById("nomeCartao").value.trim();
+      const limite = Number(document.getElementById("limiteCartao").value);
+      const fechamento = Number(document.getElementById("fechamentoCartao").value);
+      const vencimento = Number(document.getElementById("vencimentoCartao").value);
+
+      if (!nome || !limite || !fechamento || !vencimento) {
+        alert("Preencha todos os dados do cartão.");
+        return;
+      }
+
+      const cartoes = obterCartoes();
+
+      const cartao = {
+        id: idEditando ? Number(idEditando) : Date.now(),
+        nome,
+        limite,
+        fechamento,
+        vencimento
+      };
+
+      if (idEditando) {
+        const atualizados = cartoes.map(function(item) {
+          return item.id === Number(idEditando) ? cartao : item;
+        });
+
+        salvarCartoes(atualizados);
+      } else {
+        cartoes.push(cartao);
+        salvarCartoes(cartoes);
+      }
+
+      cancelarEdicaoCartao();
+      renderizarCartoes();
+    });
+
+    function editarCartao(id) {
+      const cartao = obterCartoes().find(function(item) {
+        return item.id === id;
+      });
+
+      if (!cartao) return;
+
+      document.getElementById("cartaoEditandoId").value = cartao.id;
+      document.getElementById("nomeCartao").value = cartao.nome;
+      document.getElementById("limiteCartao").value = cartao.limite;
+      document.getElementById("fechamentoCartao").value = cartao.fechamento;
+      document.getElementById("vencimentoCartao").value = cartao.vencimento;
+
+      document.getElementById("tituloCartao").textContent = "Editar Cartão";
+      document.getElementById("btnSalvarCartao").textContent = "Salvar Alterações";
+    }
+
+    function apagarCartao(id) {
+      if (!confirm("Deseja apagar este cartão? As compras dele continuarão registradas.")) return;
+
+      const cartoes = obterCartoes().filter(function(cartao) {
+        return cartao.id !== id;
+      });
+
+      salvarCartoes(cartoes);
+      renderizarCartoes();
+    }
+
+    function cancelarEdicaoCartao() {
+      formCartao.reset();
+      document.getElementById("cartaoEditandoId").value = "";
+      document.getElementById("tituloCartao").textContent = "Cadastrar Cartão";
+      document.getElementById("btnSalvarCartao").textContent = "Salvar Cartão";
+    }
+
+    formCompra.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const cartaoId = Number(document.getElementById("cartaoCompra").value);
+      const cartao = obterCartoes().find(function(item) {
+        return item.id === cartaoId;
+      });
+
+      if (!cartao) {
+        alert("Cadastre ou selecione um cartão.");
+        return;
+      }
+
+      const data = document.getElementById("dataCompra").value;
+      const descricao = document.getElementById("descricaoCompra").value.trim();
+      const valor = Number(document.getElementById("valorCompra").value);
+      const parcelas = Number(document.getElementById("parcelasCompra").value || 1);
+      let mesFatura = document.getElementById("mesFaturaCompra").value;
+      const jogarProxima = document.getElementById("proximaFaturaCompra").value;
+
+      if (jogarProxima === "sim") {
+        mesFatura = proximoMesInput();
+      }
+
+      if (!data || !descricao || !valor || valor <= 0 || !parcelas || parcelas <= 0 || !mesFatura) {
+        alert("Preencha todos os dados da compra.");
+        return;
+      }
+
+      const compras = obterCompras();
+
+      compras.push({
+        id: Date.now(),
+        data,
+        cartaoId,
+        cartaoNome: cartao.nome,
+        descricao,
+        valor,
+        parcelas,
+        valorParcela: valor / parcelas,
+        mesFatura
+      });
+
+      salvarCompras(compras);
+
+      formCompra.reset();
+      document.getElementById("dataCompra").value = dataAtualInput();
+      document.getElementById("mesFaturaCompra").value = mesAtualInput();
+      document.getElementById("parcelasCompra").value = 1;
+
+      renderizarCompras();
+    });
+
+    function apagarCompra(id) {
+      if (!confirm("Deseja apagar esta compra?")) return;
+
+      const compras = obterCompras().filter(function(compra) {
+        return compra.id !== id;
+      });
+
+      salvarCompras(compras);
+      renderizarCompras();
+    }
+
+    function renderizarCompras() {
+      const compras = obterCompras();
+      const lista = document.getElementById("listaCompras");
+
+      lista.innerHTML = "";
+
+      if (compras.length === 0) {
+        lista.innerHTML = `<tr><td colspan="7">Nenhuma compra registrada.</td></tr>`;
+      }
+
+      compras.forEach(function(compra) {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${compra.data}</td>
+          <td>${compra.cartaoNome}</td>
+          <td>${compra.descricao}</td>
+          <td>${moeda(compra.valor)}</td>
+          <td>${compra.parcelas}x de ${moeda(compra.valorParcela)}</td>
+          <td>${formatarMesAno(compra.mesFatura)}</td>
+          <td>
+            <button class="btn btn-danger" onclick="apagarCompra(${compra.id})">Apagar</button>
+          </td>
+        `;
+
+        lista.appendChild(tr);
+      });
+
+      atualizarResumoCartoes();
+      renderizarFaturas();
+    }
+
+    function calcularFaturas() {
+      const compras = obterCompras();
+      const mapa = {};
+
+      compras.forEach(function(compra) {
+        for (let i = 0; i < compra.parcelas; i++) {
+          const mes = somarMeses(compra.mesFatura, i);
+
+          if (!mapa[mes]) {
+            mapa[mes] = 0;
+          }
+
+          mapa[mes] += Number(compra.valorParcela || 0);
+        }
+      });
+
+      return Object.keys(mapa)
+        .sort()
+        .map(function(mes) {
+          return {
+            mes,
+            total: mapa[mes]
+          };
+        });
+    }
+
+    function renderizarFaturas() {
+      const faturas = calcularFaturas();
+      const lista = document.getElementById("listaFaturas");
+
+      lista.innerHTML = "";
+
+      if (faturas.length === 0) {
+        lista.innerHTML = `<tr><td colspan="3">Nenhuma fatura prevista.</td></tr>`;
+        return;
+      }
+
+      faturas.forEach(function(fatura) {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${formatarMesAno(fatura.mes)}</td>
+          <td>${moeda(fatura.total)}</td>
+          <td>${fatura.total > 0 ? "📌 Prevista" : "✅ Sem valor"}</td>
+        `;
+
+        lista.appendChild(tr);
+      });
+    }
+
+    function atualizarResumoCartoes() {
+      const compras = obterCompras();
+
+      const total = compras.reduce(function(soma, compra) {
+        return soma + Number(compra.valor || 0);
+      }, 0);
+
+      const proximo = proximoMesInput();
+
+      const faturas = calcularFaturas();
+
+      const proximaFatura = faturas.find(function(item) {
+        return item.mes === proximo;
+      });
+
+      document.getElementById("totalCartoes").textContent = moeda(total);
+      document.getElementById("proximaFatura").textContent = moeda(proximaFatura ? proximaFatura.total : 0);
+    }
+
+    document.getElementById("dataCompra").value = dataAtualInput();
+    document.getElementById("mesFaturaCompra").value = mesAtualInput();
+
+    renderizarCartoes();
+    renderizarCompras();
+</script>
+
+</body>
+</html>

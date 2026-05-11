@@ -1,0 +1,9 @@
+{
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.proxy": {
+    "/perfil": {
+      "target": "http://localhost:8080",
+      "secure": false
+    }
+  }
+}
