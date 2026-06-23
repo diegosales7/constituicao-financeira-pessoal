@@ -1,0 +1,18 @@
+.env
+application.properties
+application.yml
+target/
+.idea/
+*.iml
+node_modules/
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven / Java
+/pessoais/target/
+/pessoais/.mvn/wrapper/maven-wrapper.jar
+
