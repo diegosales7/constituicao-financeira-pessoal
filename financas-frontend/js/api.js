@@ -3,16 +3,14 @@
 // Comunicação central do Front-end com o Back-end Spring Boot
 // =========================================================
 
-// Em ambiente de produção (servido pelo Nginx) usamos o prefixo relativo /api
-// Em desenvolvimento local, acessamos o backend diretamente em http://localhost:8080
-// Default to relative /api so frontend served by Nginx will proxy correctly.
-// Allow direct backend access only when frontend is served from port 8080 (dev).
+// Em ambiente de produção (Nginx) usamos o prefixo relativo /api.
+// Em desenvolvimento local, o backend expõe a API em /api dentro do Spring Boot.
+// Por isso a base precisa incluir /api em ambos os ambientes.
 let API_BASE_URL;
 if (typeof window !== 'undefined' && window.location.port === '8080') {
-  // development: frontend served on :8080 -> backend likely on same host:8080
-  API_BASE_URL = 'http://localhost:8080';
+  // Durante desenvolvimento o backend está ouvindo na porta 10000
+  API_BASE_URL = 'http://localhost:10000/api';
 } else {
-  // production / served by Nginx: use relative API path
   API_BASE_URL = '/api';
 }
 
@@ -29,14 +27,17 @@ async function apiRequest(endpoint, method = "GET", body = null) {
     config.body = JSON.stringify(body);
   }
 
-  // Garantir que não haja duplicação de barras e evitar dupla adição do prefixo /api
   let url;
-  if (endpoint.startsWith('/api')) {
-    // endpoint já contém o prefixo /api -> usar diretamente
+  if (!endpoint) {
+    url = API_BASE_URL;
+  } else if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+    url = endpoint;
+  } else if (endpoint.startsWith('/api')) {
     url = endpoint;
   } else {
-    url = endpoint.startsWith('/') ? (API_BASE_URL + endpoint) : (API_BASE_URL + '/' + endpoint);
+    url = API_BASE_URL + (endpoint.startsWith('/') ? endpoint : '/' + endpoint);
   }
+
   const response = await fetch(url, config);
 
   const text = await response.text();
