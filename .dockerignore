@@ -1,0 +1,17 @@
+.git
+.gitignore
+.DS_Store
+.vscode
+.idea
+*.iml
+target/
+node_modules/
+npm-debug.log
+.m2/
+.gradle/
+README.md
+*.md
+.env
+.env.local
+*.log
+

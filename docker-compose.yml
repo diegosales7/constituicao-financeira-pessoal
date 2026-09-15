@@ -1,0 +1,76 @@
+version: '3.9'
+
+# Usar .env (colocar um arquivo .env na raiz, NÃO comitar)
+# NOTE: env_file deve ficar dentro do serviço (ex.: backend) — não no nível raiz
+
+services:
+  # PostgreSQL Database (interno, sem exposição pública)
+  postgres:
+    image: postgres:16-alpine
+    container_name: financas-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - financas-network
+
+  # Backend Application (não expor porta 8080 externamente)
+  backend:
+    build:
+      context: ./pessoais
+      dockerfile: Dockerfile
+    container_name: financas-backend
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+    # não publica 8080 externamente; comunicação interna via rede do compose
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT:-8080}/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - financas-network
+    restart: unless-stopped
+
+  # Frontend - Nginx serve arquivos estáticos e proxy para /api
+  frontend:
+    build:
+      context: ./financas-frontend
+      dockerfile: Dockerfile
+    container_name: financas-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - financas-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  financas-network:
+    driver: bridge
+
