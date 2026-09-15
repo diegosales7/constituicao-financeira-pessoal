@@ -6,16 +6,16 @@
     <title>Login - Constituição Financeira</title>
     <link rel="stylesheet" href="CSS/style.css?v=2">
 </head>
-<body>
+<body class="pf-theme">
 
-<div class="auth-page">
-    <div class="auth-card">
-        <div class="auth-header">
-            <h1>💰 Constituição Financeira</h1>
+<div class="auth-page pf-auth">
+    <div class="auth-card pf-auth-card" id="authCard">
+        <div class="auth-header pf-auth-header">
+            <h1>Constituição Financeira</h1>
             <p id="loginSubtitle">Entre para acessar seu sistema financeiro pessoal</p>
             <div class="auth-info-link">
                 <a href="sobre.html" class="info-link">
-                    ℹ️ Saiba como funciona a Constituição Financeira Pessoal
+                    Saiba como funciona a Constituição Financeira Pessoal
                 </a>
             </div>
         </div>
@@ -40,7 +40,7 @@
 
             <div class="auth-footer">
                 Ainda não tem conta?
-                <a href="cadastro.html">Criar cadastro</a>
+                <a href="cadastro.html" id="cadastroLink">Criar cadastro</a>
             </div>
         </div>
     </div>
@@ -51,8 +51,15 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     const context = params.get('context');
+    const authCard = document.getElementById('authCard');
+
     if (context === 'pj') {
-        document.getElementById('loginSubtitle').textContent = 'Entre para acessar a gestão financeira empresarial';
+        window.location.href = 'login-pj.html';
+        return;
+    }
+
+    if (context === 'pf') {
+        document.getElementById('loginSubtitle').textContent = 'Entre para acessar seu sistema financeiro pessoal';
     }
 </script>
 </body>

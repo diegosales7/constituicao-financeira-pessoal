@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluxo de Caixa PJ - Constituição Financeira</title>
+    <link rel="stylesheet" href="CSS/style.css?v=2">
+</head>
+<body>
+<div class="page pj-page">
+    <aside class="sidebar pj-sidebar">
+        <div class="sidebar-logo">
+            Constituição Financeira
+            <span>Gestão Empresarial & Tesouraria</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="empresa.html">Empresa</a>
+            <a href="tesouraria.html">Tesouraria</a>
+            <a href="fluxo-caixa-pj.html" class="active">Fluxo de caixa</a>
+            <a href="capital-giro.html">Capital de giro</a>
+            <a href="riscos.html">Riscos</a>
+            <a href="indicadores.html">Indicadores</a>
+            <a href="sobre.html">Sobre</a>
+            <a href="index.html" class="logout-link">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <section class="module-hero">
+            <div class="pj-hero-badge">FLUXO DE CAIXA</div>
+            <h1>Fluxo de caixa e projeção de liquidez</h1>
+            <p>
+                O fluxo de caixa corporativo organiza as entradas e saídas para garantir capacidade
+                de pagamento, continuidade operacional e sustentação da estratégia financeira.
+            </p>
+            <div class="hero-tags">
+                <span class="hero-tag">Entradas</span>
+                <span class="hero-tag">Saídas</span>
+                <span class="hero-tag">Projeção</span>
+                <span class="hero-tag">Liquidez</span>
+            </div>
+        </section>
+
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Receitas</div>
+                <div class="metric-value" id="pjReceitasTotal">R$ 0,00</div>
+                <div class="metric-helper">Total projetado</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Despesas</div>
+                <div class="metric-value" id="pjDespesasTotal">R$ 0,00</div>
+                <div class="metric-helper">Operação e estrutura</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Saldo líquido</div>
+                <div class="metric-value" id="pjSaldoLiquido">R$ 0,00</div>
+                <div class="metric-helper">Posição de caixa</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Cobertura</div>
+                <div class="metric-value" id="pjCobertura">0,0x</div>
+                <div class="metric-helper">Proteção financeira</div>
+            </div>
+        </section>
+
+        <section class="feature-grid">
+            <div class="feature-card">
+                <h3>Objetivos do fluxo de caixa</h3>
+                <ul class="pj-list-tight">
+                    <li>Antecipar vencimentos e prazos de pagamento para não prejudicar a operação.</li>
+                    <li>Controlar o ciclo de contas a receber e a pagar com disciplina e previsibilidade.</li>
+                    <li>Posicionar a empresa em cenários de expansão, crédito e sazonalidade.</li>
+                    <li>Reduzir riscos de descompasso entre geração de caixa e execução financeira.</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <h3>Indicadores essenciais</h3>
+                <ul class="pj-list-tight">
+                    <li>Receitas x despesas por período.</li>
+                    <li>Ciclo de caixa e prazo médio de recebimento.</li>
+                    <li>Vencimentos relevantes em 30, 60 e 90 dias.</li>
+                    <li>Margem de segurança e necessidade de financiamento.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="feature-card">
+            <h3>Estrutura de projeção</h3>
+            <div class="callout">
+                A organização do fluxo de caixa exige visão de curto, médio e longo prazo para manter a empresa competitiva e saudável financeiramente.
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-step">30d</div>
+                    <div class="timeline-content">
+                        <h4>Curto prazo</h4>
+                        <p>Monitoramento de caixa, contas a pagar e recebimento de faturamento.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-step">90d</div>
+                    <div class="timeline-content">
+                        <h4>Médio prazo</h4>
+                        <p>Projeção de oscilações e necessidades de financiamento ou investimento.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-step">12m</div>
+                    <div class="timeline-content">
+                        <h4>Longo prazo</h4>
+                        <p>Planejamento estratégico de crescimento, expansão e estrutura de capital.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="./js/sessao.js"></script>
+<script src="./js/pj-financas.js"></script>
+</body>
+</html>

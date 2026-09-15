@@ -15,6 +15,44 @@ function mostrarMensagem(idElemento, texto, tipo) {
   elemento.className = "auth-message " + tipo;
 }
 
+function obterUsuariosSalvos() {
+  try {
+    const dados = JSON.parse(localStorage.getItem("usuariosCadastrados") || "[]");
+    return Array.isArray(dados) ? dados : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function salvarUsuarioLocal(usuario) {
+  const usuarios = obterUsuariosSalvos();
+  const jaExiste = usuarios.some((item) => item.email && item.email.toLowerCase() === usuario.email.toLowerCase());
+
+  if (!jaExiste) {
+    usuarios.push(usuario);
+    localStorage.setItem("usuariosCadastrados", JSON.stringify(usuarios));
+  }
+}
+
+function fazerLoginLocalPF(email, senha) {
+  const usuarios = obterUsuariosSalvos();
+  const usuario = usuarios.find((item) => item.email && item.email.toLowerCase() === email.toLowerCase() && item.senha === senha);
+
+  if (!usuario) {
+    return null;
+  }
+
+  const usuarioLogado = {
+    nome: usuario.nome,
+    email: usuario.email,
+    idade: usuario.idade,
+    tipo: "pf"
+  };
+
+  localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+  return usuarioLogado;
+}
+
 // =========================================================
 // CADASTRO
 // =========================================================
@@ -59,12 +97,19 @@ if (formCadastro) {
       localStorage.setItem("usuarioLogado", JSON.stringify({
         nome: resposta.nome,
         email: resposta.email,
-        idade: resposta.idade
+        idade: resposta.idade,
+        tipo: "pf"
       }));
+
+      salvarUsuarioLocal({
+        nome: resposta.nome,
+        email: resposta.email,
+        idade: resposta.idade,
+        senha: senha
+      });
 
       mostrarMensagem("mensagemCadastro", "Cadastro realizado com sucesso e salvo no banco!", "success");
 
-      // Marcar que é primeiro acesso (sem ter completado onboarding)
       localStorage.setItem('onboardingCompleto', 'false');
 
       setTimeout(function() {
@@ -72,8 +117,21 @@ if (formCadastro) {
       }, 800);
 
     } catch (error) {
-      mostrarMensagem("mensagemCadastro", error.message, "error");
-      console.error("Erro no cadastro:", error);
+      salvarUsuarioLocal(novoUsuario);
+      localStorage.setItem("usuarioLogado", JSON.stringify({
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+        idade: novoUsuario.idade,
+        tipo: "pf"
+      }));
+
+      mostrarMensagem("mensagemCadastro", "Cadastro local realizado com sucesso!", "success");
+
+      localStorage.setItem('onboardingCompleto', 'false');
+
+      setTimeout(function() {
+        window.location.href = "onboarding.html";
+      }, 800);
     }
   });
 }
@@ -107,17 +165,32 @@ if (formLogin) {
       localStorage.setItem("usuarioLogado", JSON.stringify({
         nome: resposta.nome,
         email: resposta.email,
-        idade: resposta.idade
+        idade: resposta.idade,
+        tipo: "pf"
       }));
 
       mostrarMensagem("mensagemLogin", "Login realizado com sucesso!", "success");
 
+      const params = new URLSearchParams(window.location.search);
+      const context = params.get('context');
+      const destino = context === 'pj' ? 'empresa.html' : 'dashboard.html';
+
       setTimeout(function() {
-        window.location.href = "dashboard.html";
+        window.location.href = destino;
       }, 600);
 
     } catch (error) {
-      mostrarMensagem("mensagemLogin", error.message, "error");
+      const loginLocal = fazerLoginLocalPF(email, senha);
+
+      if (loginLocal) {
+        mostrarMensagem("mensagemLogin", "Login local realizado com sucesso!", "success");
+        setTimeout(function() {
+          window.location.href = "dashboard.html";
+        }, 600);
+        return;
+      }
+
+      mostrarMensagem("mensagemLogin", "E-mail ou senha inválidos para o ambiente PF.", "error");
       console.error("Erro no login:", error);
     }
   });
