@@ -64,6 +64,70 @@
             </div>
         </section>
 
+        <section class="card pj-card">
+            <div class="pj-section-header">
+                <h2>Projeção do fluxo de caixa</h2>
+                <span class="pj-badge pj-badge-info">Dados operacionais</span>
+            </div>
+
+            <form id="formFluxoCaixaPJ">
+                <input type="hidden" id="fluxoEditandoId" value="">
+
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label>Mês de referência</label>
+                        <input type="month" id="fluxoMes" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Receitas previstas</label>
+                        <input type="number" id="fluxoReceitas" step="0.01" min="0" placeholder="Ex: 240000">
+                    </div>
+                    <div class="form-group">
+                        <label>Despesas previstas</label>
+                        <input type="number" id="fluxoDespesas" step="0.01" min="0" placeholder="Ex: 190000">
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>Investimentos / capex</label>
+                        <input type="number" id="fluxoInvestimentos" step="0.01" min="0" placeholder="Ex: 35000">
+                    </div>
+                    <div class="form-group">
+                        <label>Observação do fluxo</label>
+                        <input type="text" id="fluxoObservacao" placeholder="Ex: aumento de faturamento no mês, pagamento de folha, reajuste de aluguel">
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary" id="btnSalvarFluxoPJ">Salvar fluxo</button>
+                    <button type="button" class="btn btn-outline" id="btnLimparFluxoPJ">Limpar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card pj-card">
+            <div class="pj-section-header">
+                <h3>Histórico de projeção</h3>
+                <span class="pj-badge pj-badge-success">Registros</span>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mês</th>
+                            <th>Receitas</th>
+                            <th>Despesas</th>
+                            <th>Investimentos</th>
+                            <th>Observação</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaFluxoCaixaPJ"></tbody>
+                </table>
+            </div>
+        </section>
+
         <section class="feature-grid">
             <div class="feature-card">
                 <h3>Objetivos do fluxo de caixa</h3>
@@ -119,5 +183,272 @@
 
 <script src="./js/sessao.js"></script>
 <script src="./js/pj-financas.js"></script>
+<script>
+    function valorReceita(item) {
+        if (item && item.receitas !== undefined && item.receitas !== null && item.receitas !== '') {
+            return Number(item.receitas);
+        }
+        if (item && item.valor !== undefined && item.valor !== null && item.valor !== '') {
+            return Number(item.valor);
+        }
+        return 0;
+    }
+
+    function valorDespesa(item) {
+        if (item && item.despesas !== undefined && item.despesas !== null && item.despesas !== '') {
+            return Number(item.despesas);
+        }
+        if (item && item.valor !== undefined && item.valor !== null && item.valor !== '') {
+            return Number(item.valor);
+        }
+        return 0;
+    }
+
+    function valorInvestimento(item) {
+        if (item && item.investimentos !== undefined && item.investimentos !== null && item.investimentos !== '') {
+            return Number(item.investimentos);
+        }
+        return 0;
+    }
+
+    function obterFluxoPJLocal() {
+        try {
+            return JSON.parse(localStorage.getItem('fluxoCaixaPJ') || '{"receitasLista":[],"despesasLista":[]}');
+        } catch (error) {
+            return { receitasLista: [], despesasLista: [] };
+        }
+    }
+
+    function salvarFluxoPJLocal(fluxo) {
+        localStorage.setItem('fluxoCaixaPJ', JSON.stringify(fluxo));
+    }
+
+    function atualizarTotaisFluxo(fluxo) {
+        fluxo.receitas = Array.isArray(fluxo.receitasLista) ? fluxo.receitasLista.reduce(function(soma, item) {
+            return soma + valorReceita(item);
+        }, 0) : 0;
+
+        fluxo.despesas = Array.isArray(fluxo.despesasLista) ? fluxo.despesasLista.reduce(function(soma, item) {
+            return soma + valorDespesa(item);
+        }, 0) : 0;
+
+        return fluxo;
+    }
+
+    function limparFormularioFluxoPJ() {
+        var formulario = document.getElementById('formFluxoCaixaPJ');
+        var botaoSalvar = document.getElementById('btnSalvarFluxoPJ');
+
+        if (formulario) {
+            formulario.reset();
+        }
+
+        var inputEditando = document.getElementById('fluxoEditandoId');
+        if (inputEditando) {
+            inputEditando.value = '';
+        }
+
+        if (botaoSalvar) {
+            botaoSalvar.textContent = 'Salvar fluxo';
+        }
+    }
+
+    function renderizarFluxoPJ() {
+        var fluxo = obterFluxoPJLocal();
+        var tabela = document.getElementById('tabelaFluxoCaixaPJ');
+        if (!tabela) return;
+
+        var receitas = Array.isArray(fluxo.receitasLista) ? fluxo.receitasLista : [];
+        var despesas = Array.isArray(fluxo.despesasLista) ? fluxo.despesasLista : [];
+
+        var lista = receitas.length ? receitas.map(function(item) {
+            var despesaCorrespondente = despesas.find(function(d) {
+                return Number(d.id) === Number(item.id);
+            }) || {};
+
+            return {
+                id: item.id,
+                mes: item.mes,
+                receitas: valorReceita(item),
+                despesas: valorDespesa(item) || valorDespesa(despesaCorrespondente),
+                investimentos: valorInvestimento(item),
+                observacao: item.observacao || despesaCorrespondente.observacao || '-'
+            };
+        }) : despesas.map(function(item) {
+            return {
+                id: item.id,
+                mes: item.mes,
+                receitas: 0,
+                despesas: valorDespesa(item),
+                investimentos: valorInvestimento(item),
+                observacao: item.observacao || '-'
+            };
+        });
+
+        if (!lista.length) {
+            tabela.innerHTML = '<tr><td colspan="6">Nenhum fluxo registrado ainda.</td></tr>';
+            return;
+        }
+
+        tabela.innerHTML = lista.map(function(item) {
+            return '<tr>' +
+                '<td>' + item.mes + '</td>' +
+                '<td>' + item.receitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>' +
+                '<td>' + item.despesas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>' +
+                '<td>' + item.investimentos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + '</td>' +
+                '<td>' + (item.observacao || '-') + '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn btn-outline" onclick="editarFluxoPJ(' + item.id + ')">Editar</button> ' +
+                    '<button type="button" class="btn btn-danger" onclick="apagarFluxoPJ(' + item.id + ')">Apagar</button>' +
+                '</td>' +
+                '</tr>';
+        }).join('');
+    }
+
+    function editarFluxoPJ(id) {
+        var fluxo = obterFluxoPJLocal();
+        var item = (fluxo.receitasLista || []).find(function(entry) {
+            return Number(entry.id) === Number(id);
+        });
+
+        if (!item) return;
+
+        var inputEditando = document.getElementById('fluxoEditandoId');
+        var inputMes = document.getElementById('fluxoMes');
+        var inputReceitas = document.getElementById('fluxoReceitas');
+        var inputDespesas = document.getElementById('fluxoDespesas');
+        var inputInvestimentos = document.getElementById('fluxoInvestimentos');
+        var inputObservacao = document.getElementById('fluxoObservacao');
+        var botaoSalvar = document.getElementById('btnSalvarFluxoPJ');
+
+        if (inputEditando) inputEditando.value = item.id;
+        if (inputMes) inputMes.value = item.mes;
+        if (inputReceitas) inputReceitas.value = item.receitas;
+        if (inputDespesas) inputDespesas.value = item.despesas;
+        if (inputInvestimentos) inputInvestimentos.value = item.investimentos || 0;
+        if (inputObservacao) inputObservacao.value = item.observacao || '';
+        if (botaoSalvar) botaoSalvar.textContent = 'Salvar alterações';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function apagarFluxoPJ(id) {
+        if (!confirm('Deseja apagar este registro do fluxo de caixa?')) return;
+
+        var fluxo = obterFluxoPJLocal();
+        fluxo.receitasLista = (fluxo.receitasLista || []).filter(function(item) {
+            return Number(item.id) !== Number(id);
+        });
+        fluxo.despesasLista = (fluxo.despesasLista || []).filter(function(item) {
+            return Number(item.id) !== Number(id);
+        });
+
+        salvarFluxoPJLocal(atualizarTotaisFluxo(fluxo));
+        renderizarFluxoPJ();
+
+        if (window.atualizarDadosPJ) {
+            window.atualizarDadosPJ();
+        }
+
+        var inputEditando = document.getElementById('fluxoEditandoId');
+        if (inputEditando && Number(inputEditando.value) === Number(id)) {
+            limparFormularioFluxoPJ();
+        }
+    }
+
+    var formularioFluxoPJ = document.getElementById('formFluxoCaixaPJ');
+    if (formularioFluxoPJ) {
+        formularioFluxoPJ.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var dados = {
+                mes: document.getElementById('fluxoMes').value,
+                receitas: Number(document.getElementById('fluxoReceitas').value || 0),
+                despesas: Number(document.getElementById('fluxoDespesas').value || 0),
+                investimentos: Number(document.getElementById('fluxoInvestimentos').value || 0),
+                observacao: document.getElementById('fluxoObservacao').value.trim()
+            };
+
+            if (!dados.mes) {
+                alert('Informe o mês de referência.');
+                return;
+            }
+
+            var fluxo = obterFluxoPJLocal();
+            if (!Array.isArray(fluxo.receitasLista)) fluxo.receitasLista = [];
+            if (!Array.isArray(fluxo.despesasLista)) fluxo.despesasLista = [];
+
+            var idEditando = document.getElementById('fluxoEditandoId').value;
+            var id = idEditando ? Number(idEditando) : Date.now();
+
+            if (idEditando) {
+                fluxo.receitasLista = fluxo.receitasLista.map(function(item) {
+                    if (Number(item.id) === Number(idEditando)) {
+                        return {
+                            id: Number(idEditando),
+                            mes: dados.mes,
+                            receitas: dados.receitas,
+                            despesas: dados.despesas,
+                            investimentos: dados.investimentos,
+                            observacao: dados.observacao
+                        };
+                    }
+                    return item;
+                });
+
+                fluxo.despesasLista = fluxo.despesasLista.map(function(item) {
+                    if (Number(item.id) === Number(idEditando)) {
+                        return {
+                            id: Number(idEditando),
+                            valor: dados.despesas,
+                            despesas: dados.despesas,
+                            mes: dados.mes,
+                            observacao: dados.observacao
+                        };
+                    }
+                    return item;
+                });
+            } else {
+                fluxo.receitasLista.push({
+                    id: id,
+                    mes: dados.mes,
+                    receitas: dados.receitas,
+                    despesas: dados.despesas,
+                    investimentos: dados.investimentos,
+                    observacao: dados.observacao
+                });
+
+                fluxo.despesasLista.push({
+                    id: id,
+                    valor: dados.despesas,
+                    despesas: dados.despesas,
+                    mes: dados.mes,
+                    observacao: dados.observacao
+                });
+            }
+
+            salvarFluxoPJLocal(atualizarTotaisFluxo(fluxo));
+            renderizarFluxoPJ();
+            if (window.atualizarDadosPJ) {
+                window.atualizarDadosPJ();
+            }
+            limparFormularioFluxoPJ();
+        });
+    }
+
+    var botaoLimparFluxoPJ = document.getElementById('btnLimparFluxoPJ');
+    if (botaoLimparFluxoPJ) {
+        botaoLimparFluxoPJ.addEventListener('click', function() {
+            limparFormularioFluxoPJ();
+            localStorage.removeItem('fluxoCaixaPJ');
+            renderizarFluxoPJ();
+            if (window.atualizarDadosPJ) {
+                window.atualizarDadosPJ();
+            }
+        });
+    }
+
+    renderizarFluxoPJ();
+</script>
 </body>
 </html>

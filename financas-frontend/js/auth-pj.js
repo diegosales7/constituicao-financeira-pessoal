@@ -1,3 +1,43 @@
+const DEMO_USER_PJ = {
+  razaoSocial: 'Empresa Demo LTDA',
+  nomeFantasia: 'Empresa Demo',
+  cnpj: '11.111.111/0001-11',
+  ramo: 'Consultoria',
+  porte: 'Médio',
+  endereco: 'Av. Paulista, 1000 - São Paulo/SP',
+  cidadeUf: 'São Paulo/SP',
+  responsavelFinanceiro: 'Gestor Demo',
+  cargo: 'Financeiro',
+  emailCorporativo: 'demo.pj@empresa.com.br',
+  telefone: '(11) 98765-4321',
+  politicaFinanceira: 'Crescimento saudável e enquadramento financeiro',
+  senha: 'demo123'
+};
+
+function garantirEmpresaDemoPj() {
+  const empresaAtual = JSON.parse(localStorage.getItem('empresaPJ') || 'null');
+
+  if (!empresaAtual || !empresaAtual.emailCorporativo) {
+    localStorage.setItem('empresaPJ', JSON.stringify(DEMO_USER_PJ));
+  }
+
+  return JSON.parse(localStorage.getItem('empresaPJ') || JSON.stringify(DEMO_USER_PJ));
+}
+
+function logarUsuarioDemoPj() {
+  const empresa = garantirEmpresaDemoPj();
+  const usuarioLogado = {
+    nome: empresa.responsavelFinanceiro || 'Responsável financeiro',
+    email: empresa.emailCorporativo,
+    tipo: 'pj',
+    empresa: empresa.razaoSocial || 'Empresa PJ'
+  };
+
+  localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+  localStorage.setItem('modoDemo', 'true');
+  return usuarioLogado;
+}
+
 function mostrarMensagemPj(idElemento, texto, tipo) {
   const elemento = document.getElementById(idElemento);
 
@@ -121,6 +161,24 @@ function inicializarMascaraPj() {
       aplicarEstadoCampo('cadastroTelefoneCorp', validarTelefone(this.value) || this.value.length === 0);
     });
   }
+}
+
+garantirEmpresaDemoPj();
+
+function tentarLoginDemoPjSeHabilitado() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('demo') !== 'pj') {
+    return false;
+  }
+
+  logarUsuarioDemoPj();
+
+  setTimeout(function () {
+    window.location.href = 'empresa.html';
+  }, 200);
+
+  return true;
 }
 
 const formCadastroPj = document.getElementById('formCadastroPj');
@@ -278,10 +336,20 @@ if (formLoginPj) {
       return;
     }
 
-    const empresaPJ = JSON.parse(localStorage.getItem('empresaPJ') || '{}');
+    let empresaPJ = JSON.parse(localStorage.getItem('empresaPJ') || 'null');
 
     if (!empresaPJ || !empresaPJ.emailCorporativo || !empresaPJ.senha) {
-      mostrarMensagemPj('mensagemLogin', 'Nenhuma empresa PJ cadastrada com esse e-mail. Crie a conta antes de entrar.', 'error');
+      empresaPJ = DEMO_USER_PJ;
+      localStorage.setItem('empresaPJ', JSON.stringify(empresaPJ));
+    }
+
+    if (email === DEMO_USER_PJ.emailCorporativo && senha === DEMO_USER_PJ.senha) {
+      logarUsuarioDemoPj();
+      mostrarMensagemPj('mensagemLogin', 'Login de demonstração realizado com sucesso!', 'success');
+
+      setTimeout(function () {
+        window.location.href = 'empresa.html';
+      }, 700);
       return;
     }
 
@@ -292,6 +360,7 @@ if (formLoginPj) {
         tipo: 'pj',
         empresa: empresaPJ.razaoSocial || 'Empresa PJ'
       }));
+      localStorage.setItem('modoDemo', 'false');
 
       mostrarMensagemPj('mensagemLogin', 'Login realizado com sucesso!', 'success');
 
@@ -302,4 +371,8 @@ if (formLoginPj) {
       mostrarMensagemPj('mensagemLogin', 'E-mail ou senha inválidos para o ambiente PJ.', 'error');
     }
   });
+}
+
+if (document.getElementById('formLoginPj')) {
+  tentarLoginDemoPjSeHabilitado();
 }

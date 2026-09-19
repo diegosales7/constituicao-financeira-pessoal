@@ -15,6 +15,43 @@ function mostrarMensagem(idElemento, texto, tipo) {
   elemento.className = "auth-message " + tipo;
 }
 
+const DEMO_USER_PF = {
+  nome: "Usuário Demo PF",
+  email: "demo.pf@teste.com",
+  idade: 32,
+  senha: "demo123"
+};
+
+function garantirUsuarioDemoPF() {
+  const usuarios = obterUsuariosSalvos();
+  const jaExiste = usuarios.some((item) => item.email && item.email.toLowerCase() === DEMO_USER_PF.email.toLowerCase());
+
+  if (!jaExiste) {
+    usuarios.push({
+      nome: DEMO_USER_PF.nome,
+      email: DEMO_USER_PF.email,
+      idade: DEMO_USER_PF.idade,
+      senha: DEMO_USER_PF.senha
+    });
+    localStorage.setItem("usuariosCadastrados", JSON.stringify(usuarios));
+  }
+
+  return DEMO_USER_PF;
+}
+
+function logarUsuarioDemoPF() {
+  const usuarioLogado = {
+    nome: DEMO_USER_PF.nome,
+    email: DEMO_USER_PF.email,
+    idade: DEMO_USER_PF.idade,
+    tipo: "pf"
+  };
+
+  localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+  localStorage.setItem("modoDemo", "true");
+  return usuarioLogado;
+}
+
 function obterUsuariosSalvos() {
   try {
     const dados = JSON.parse(localStorage.getItem("usuariosCadastrados") || "[]");
@@ -56,6 +93,27 @@ function fazerLoginLocalPF(email, senha) {
 // =========================================================
 // CADASTRO
 // =========================================================
+
+garantirUsuarioDemoPF();
+
+function tentarLoginDemoPFSeHabilitado() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("demo") !== "pf") {
+    return false;
+  }
+
+  const loginLocal = fazerLoginLocalPF(DEMO_USER_PF.email, DEMO_USER_PF.senha);
+
+  if (loginLocal) {
+    setTimeout(function() {
+      window.location.href = "dashboard.html";
+    }, 200);
+    return true;
+  }
+
+  return false;
+}
 
 const formCadastro = document.getElementById("formCadastro");
 
@@ -168,6 +226,7 @@ if (formLogin) {
         idade: resposta.idade,
         tipo: "pf"
       }));
+      localStorage.setItem("modoDemo", "false");
 
       mostrarMensagem("mensagemLogin", "Login realizado com sucesso!", "success");
 
@@ -180,9 +239,19 @@ if (formLogin) {
       }, 600);
 
     } catch (error) {
+      if (email === DEMO_USER_PF.email && senha === DEMO_USER_PF.senha) {
+        logarUsuarioDemoPF();
+        mostrarMensagem("mensagemLogin", "Login de demonstração realizado com sucesso!", "success");
+        setTimeout(function() {
+          window.location.href = "dashboard.html";
+        }, 600);
+        return;
+      }
+
       const loginLocal = fazerLoginLocalPF(email, senha);
 
       if (loginLocal) {
+        localStorage.setItem("modoDemo", "false");
         mostrarMensagem("mensagemLogin", "Login local realizado com sucesso!", "success");
         setTimeout(function() {
           window.location.href = "dashboard.html";
@@ -194,4 +263,8 @@ if (formLogin) {
       console.error("Erro no login:", error);
     }
   });
+}
+
+if (document.getElementById("formLogin")) {
+  tentarLoginDemoPFSeHabilitado();
 }

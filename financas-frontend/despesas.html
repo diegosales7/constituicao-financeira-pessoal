@@ -90,18 +90,10 @@
                     </div>
                 </div>
 
-                <div class="grid grid-2">
+                <div class="grid grid-1">
                     <div class="form-group">
                         <label>Categoria</label>
                         <input type="text" id="categoriaDespesa" placeholder="Ex: alimentação, moradia, transporte">
-                    </div>
-
-                    <div class="form-group">
-                        <label>É essencial?</label>
-                        <select id="essencialDespesa">
-                            <option value="sim">Sim</option>
-                            <option value="nao">Não</option>
-                        </select>
                     </div>
                 </div>
 
@@ -128,7 +120,6 @@
                         <th>Data</th>
                         <th>Descrição</th>
                         <th>Categoria</th>
-                        <th>Essencial</th>
                         <th>Valor</th>
                         <th>Ações</th>
                     </tr>
@@ -174,7 +165,7 @@
         descricao,
         valor: Number(valor),
         categoria: categoria || "Sem categoria",
-        essencial: essencial || "sim"
+        essencial: "nao"
       };
     }
 
@@ -207,7 +198,6 @@
           <td>${formatarDataTabela(despesa.data)}</td>
           <td>${despesa.descricao}</td>
           <td>${despesa.categoria}</td>
-          <td>${despesa.essencial === "sim" ? "✅ Sim" : "⚠️ Não"}</td>
           <td>${moeda(despesa.valor)}</td>
           <td>
             <button class="btn btn-outline" onclick="editarDespesa(${despesa.id})">Editar</button>
@@ -227,7 +217,7 @@
       const descricao = document.getElementById("descricaoDespesa").value.trim();
       const valor = Number(document.getElementById("valorDespesa").value);
       const categoria = document.getElementById("categoriaDespesa").value.trim();
-      const essencial = document.getElementById("essencialDespesa").value;
+      const essencial = "nao";
 
       if (!data) {
         alert("Informe a data da despesa.");
@@ -273,7 +263,6 @@
       document.getElementById("descricaoDespesa").value = despesa.descricao;
       document.getElementById("valorDespesa").value = despesa.valor;
       document.getElementById("categoriaDespesa").value = despesa.categoria;
-      document.getElementById("essencialDespesa").value = despesa.essencial;
 
       document.getElementById("tituloFormularioDespesa").textContent = "Editar Despesa";
       document.getElementById("btnSalvarDespesa").textContent = "Salvar Alterações";

@@ -419,6 +419,150 @@
 }
 </style>
 
+<script>
+(function () {
+    const usuario = localStorage.getItem('usuarioLogado');
+    const tipoUsuario = usuario ? JSON.parse(usuario).tipo : null;
+    const ambientePj = tipoUsuario === 'pj';
+
+    if (!ambientePj) {
+        return;
+    }
+
+    document.title = 'Sobre - Tesouraria Corporativa';
+
+    const header = document.querySelector('.page-header');
+    if (header) {
+        header.innerHTML = `
+            <h1>🏢 Sobre a Tesouraria Corporativa</h1>
+            <p>Regras, indicadores e práticas que sustentam a saúde financeira da empresa.</p>
+        `;
+    }
+
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.classList.add('pj-sidebar');
+        const logo = sidebar.querySelector('.sidebar-logo');
+        if (logo) {
+            logo.innerHTML = '💼 Constituição Financeira <span>Gestão Empresarial & Tesouraria</span>';
+        }
+
+        const nav = sidebar.querySelector('.sidebar-nav');
+        if (nav) {
+            nav.innerHTML = `
+                <a href="empresa.html">Empresa</a>
+                <a href="tesouraria.html">Tesouraria</a>
+                <a href="fluxo-caixa-pj.html">Fluxo de caixa</a>
+                <a href="capital-giro.html">Capital de giro</a>
+                <a href="riscos.html">Riscos</a>
+                <a href="indicadores.html">Indicadores</a>
+                <a href="sobre.html" class="active">Sobre</a>
+                <a href="index.html" class="logout-link">Sair</a>
+            `;
+        }
+    }
+
+    const container = document.querySelector('.container-full');
+    if (container) {
+        container.innerHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <h2>🎯 Missão da tesouraria corporativa</h2>
+                </div>
+                <div class="card-body">
+                    <p>
+                        A tesouraria da empresa deve garantir liquidez, previsibilidade de caixa, equilíbrio entre
+                        recebimentos e pagamentos e proteção do capital de giro. O foco não é apenas pagar contas,
+                        mas preservar a capacidade operacional, financeira e estratégica da organização.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚖️ Regras fundamentais</h2>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-2">
+                        <div class="principle-box">
+                            <h3>📊 Liquidez mínima</h3>
+                            <p>Manter caixa suficiente para cobrir despesas operacionais críticas e compromissos de curto prazo.</p>
+                        </div>
+                        <div class="principle-box">
+                            <h3>🧾 Política de recebimento</h3>
+                            <p>Monitorar prazo médio de recebimento, risco de inadimplência e velocidade de conversão em caixa.</p>
+                        </div>
+                        <div class="principle-box">
+                            <h3>💳 Política de pagamento</h3>
+                            <p>Negociar prazos, limites, condições e organização da dívida para evitar ruptura de fluxo.</p>
+                        </div>
+                        <div class="principle-box">
+                            <h3>🏭 Capital de giro</h3>
+                            <p>Balancear estoque, contas a receber, contas a pagar e prazo operacional para proteger a operação.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>📈 Indicadores que orientam a decisão</h2>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-2">
+                        <div class="module-item">
+                            <strong>💰 Cobertura</strong>
+                            <p>Compara receitas e despesas para verificar a capacidade de sustentar o negócio.</p>
+                        </div>
+                        <div class="module-item">
+                            <strong>📉 Margem</strong>
+                            <p>Mostra a eficiência operacional e o potencial real de geração de resultado.</p>
+                        </div>
+                        <div class="module-item">
+                            <strong>🧮 Liquidez</strong>
+                            <p>Avalia se o caixa atual é suficiente para cobrir obrigações e saldos mínimos.</p>
+                        </div>
+                        <div class="module-item">
+                            <strong>⚠️ Endividamento</strong>
+                            <p>Identifica o peso das obrigações financeiras na estrutura de receitas da companhia.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>🛡️ Governança da tesouraria</h2>
+                </div>
+                <div class="card-body">
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>Definir níveis de caixa mínimo e limites operacionais.</li>
+                        <li>Monitorar prazos de pagamento, recebimento e risco de inadimplência.</li>
+                        <li>Controlar o ciclo financeiro da empresa com foco em solvência e previsibilidade.</li>
+                        <li>Mapear riscos de liquidez, crédito, mercado e operação com plano de mitigação.</li>
+                        <li>Revisar mensalmente indicadores e ajustar políticas conforme o cenário econômico.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, rgba(30, 64, 175, 0.12), rgba(14, 165, 233, 0.08));">
+                <div class="card-header">
+                    <h2>✅ Regra prática para empresa saudável</h2>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Uma empresa competitiva não é a que vende mais sem controlar caixa; é a que transforma
+                        receitas em liquidez, disciplina pagamentos, preserva capital de giro e mantém riscos sob controle.
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+
+    document.body.classList.add('pj-theme');
+})();
+</script>
+
 <script src="./js/api.js"></script>
 <script src="./js/sessao.js"></script>
 </body>

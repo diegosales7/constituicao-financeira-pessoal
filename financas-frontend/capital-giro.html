@@ -64,6 +64,55 @@
             </div>
         </section>
 
+        <section class="card pj-card">
+            <div class="pj-section-header">
+                <h2>Dados de capital de giro</h2>
+                <span class="pj-badge pj-badge-warning">Operação</span>
+            </div>
+
+            <form id="formCapitalGiroPJ">
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label>Estoque</label>
+                        <input type="number" id="capitalEstoque" step="0.01" min="0" placeholder="Ex: 140000">
+                    </div>
+                    <div class="form-group">
+                        <label>Clientes / recebíveis</label>
+                        <input type="number" id="capitalClientes" step="0.01" min="0" placeholder="Ex: 220000">
+                    </div>
+                    <div class="form-group">
+                        <label>Fornecedores / pagar</label>
+                        <input type="number" id="capitalFornecedores" step="0.01" min="0" placeholder="Ex: 160000">
+                    </div>
+                </div>
+
+                <div class="grid grid-3">
+                    <div class="form-group">
+                        <label>Prazo médio de recebimento (dias)</label>
+                        <input type="number" id="capitalPrazoRecebimento" min="0" placeholder="Ex: 24">
+                    </div>
+                    <div class="form-group">
+                        <label>Prazo médio de pagamento (dias)</label>
+                        <input type="number" id="capitalPrazoPagamento" min="0" placeholder="Ex: 18">
+                    </div>
+                    <div class="form-group">
+                        <label>Ciclo operacional (dias)</label>
+                        <input type="number" id="capitalCicloOperacional" min="0" placeholder="Ex: 42">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Observação do capital de giro</label>
+                    <textarea id="capitalObservacao" placeholder="Descreva o capital de giro necessário para operar, estoque crítico, prazo de cobrança e fornecedores relevantes."></textarea>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Salvar capital de giro</button>
+                    <button type="button" class="btn btn-outline" id="btnLimparCapitalPJ">Limpar</button>
+                </div>
+            </form>
+        </section>
+
         <section class="feature-grid">
             <div class="feature-card">
                 <h3>O que é capital de giro</h3>
@@ -119,5 +168,42 @@
 
 <script src="./js/sessao.js"></script>
 <script src="./js/pj-financas.js"></script>
+<script>
+    function preencherCapitalGiroPJ() {
+        const dados = JSON.parse(localStorage.getItem('capitalGiroPJ') || '{}');
+        document.getElementById('capitalEstoque').value = dados.estoque || 0;
+        document.getElementById('capitalClientes').value = dados.clientes || 0;
+        document.getElementById('capitalFornecedores').value = dados.fornecedores || 0;
+        document.getElementById('capitalPrazoRecebimento').value = dados.prazoRecebimento || 0;
+        document.getElementById('capitalPrazoPagamento').value = dados.prazoPagamento || 0;
+        document.getElementById('capitalCicloOperacional').value = dados.cicloOperacional || 0;
+        document.getElementById('capitalObservacao').value = dados.observacao || '';
+    }
+
+    document.getElementById('formCapitalGiroPJ')?.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const dados = {
+            estoque: Number(document.getElementById('capitalEstoque').value || 0),
+            clientes: Number(document.getElementById('capitalClientes').value || 0),
+            fornecedores: Number(document.getElementById('capitalFornecedores').value || 0),
+            prazoRecebimento: Number(document.getElementById('capitalPrazoRecebimento').value || 0),
+            prazoPagamento: Number(document.getElementById('capitalPrazoPagamento').value || 0),
+            cicloOperacional: Number(document.getElementById('capitalCicloOperacional').value || 0),
+            observacao: document.getElementById('capitalObservacao').value.trim()
+        };
+
+        localStorage.setItem('capitalGiroPJ', JSON.stringify(dados));
+        window.atualizarDadosPJ();
+        alert('Dados de capital de giro salvos com sucesso.');
+    });
+
+    document.getElementById('btnLimparCapitalPJ')?.addEventListener('click', function() {
+        localStorage.removeItem('capitalGiroPJ');
+        preencherCapitalGiroPJ();
+        window.atualizarDadosPJ();
+    });
+
+    preencherCapitalGiroPJ();
+</script>
 </body>
 </html>

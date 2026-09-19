@@ -105,8 +105,24 @@ function aplicarTemaAmbiente() {
   body.classList.add("pf-theme");
 }
 
+function modoDemoAtivo() {
+  return localStorage.getItem("modoDemo") === "true";
+}
+
 function protegerPagina() {
   const usuario = obterUsuarioLogado();
+
+  if (modoDemoAtivo() && !usuario) {
+    const pagina = paginaAtual();
+    if (pagina === "login.html") {
+      window.location.href = "dashboard.html";
+      return;
+    }
+    if (pagina === "login-pj.html") {
+      window.location.href = "empresa.html";
+      return;
+    }
+  }
 
   if (usuario) {
     const pagina = paginaAtual();
@@ -185,8 +201,13 @@ function mostrarUsuarioNaSidebar() {
   caixaUsuario.classList.add("sidebar-user");
 
   const perfilPf = `
-    <div class="sidebar-user-label">Usuário</div>
-    <div class="sidebar-user-name">${usuario.nome || "Usuário"}</div>
+    <div class="sidebar-user-header">
+      <div class="sidebar-user-avatar">${(usuario.nome || "U").charAt(0).toUpperCase()}</div>
+      <div>
+        <div class="sidebar-user-label">Usuário</div>
+        <div class="sidebar-user-name">${usuario.nome || "Usuário"}</div>
+      </div>
+    </div>
     <div class="sidebar-user-email">${usuario.email || "E-mail não informado"}</div>
     <div class="sidebar-user-age">Idade: ${usuario.idade || "Não informada"}</div>
 
@@ -204,8 +225,13 @@ function mostrarUsuarioNaSidebar() {
   `;
 
   const perfilPj = `
-    <div class="sidebar-user-label">Empresa</div>
-    <div class="sidebar-user-name">${usuario.empresa || "Empresa PJ"}</div>
+    <div class="sidebar-user-header">
+      <div class="sidebar-user-avatar">${(usuario.empresa || "E").charAt(0).toUpperCase()}</div>
+      <div>
+        <div class="sidebar-user-label">Empresa</div>
+        <div class="sidebar-user-name">${usuario.empresa || "Empresa PJ"}</div>
+      </div>
+    </div>
     <div class="sidebar-user-email">${usuario.email || "E-mail corporativo"}</div>
     <div class="sidebar-user-age">Responsável: ${usuario.nome || "Gestor"}</div>
 
@@ -228,6 +254,7 @@ function configurarSair() {
 
       localStorage.removeItem("usuarioLogado");
       localStorage.removeItem("empresaPJ");
+      localStorage.removeItem("modoDemo");
       window.location.href = "index.html";
     });
   });

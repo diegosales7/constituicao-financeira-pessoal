@@ -64,6 +64,63 @@
             </div>
         </section>
 
+        <section class="card pj-card">
+            <div class="pj-section-header">
+                <h2>Mapa de riscos da empresa</h2>
+                <span class="pj-badge pj-badge-danger">Risco</span>
+            </div>
+
+            <form id="formRiscosPJ">
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>Risco de liquidez</label>
+                        <select id="riscoLiquidez">
+                            <option value="baixo">Baixo</option>
+                            <option value="medio">Médio</option>
+                            <option value="alto">Alto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Risco de crédito</label>
+                        <select id="riscoCredito">
+                            <option value="baixo">Baixo</option>
+                            <option value="medio">Médio</option>
+                            <option value="alto">Alto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label>Risco de mercado</label>
+                        <select id="riscoMercado">
+                            <option value="baixo">Baixo</option>
+                            <option value="medio">Médio</option>
+                            <option value="alto">Alto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Risco operacional</label>
+                        <select id="riscoOperacional">
+                            <option value="baixo">Baixo</option>
+                            <option value="medio">Médio</option>
+                            <option value="alto">Alto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Plano de mitigação</label>
+                    <textarea id="planoMitigacao" placeholder="Descreva ações de contingência, limites de endividamento, políticas de cobrança e cobertura financeira para reduzir riscos."></textarea>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary">Salvar riscos</button>
+                    <button type="button" class="btn btn-outline" id="btnLimparRiscosPJ">Limpar</button>
+                </div>
+            </form>
+        </section>
+
         <section class="feature-grid">
             <div class="feature-card">
                 <h3>Principais riscos</h3>
@@ -116,5 +173,38 @@
 
 <script src="./js/sessao.js"></script>
 <script src="./js/pj-financas.js"></script>
+<script>
+    function preencherRiscoPJ() {
+        const dados = JSON.parse(localStorage.getItem('riscosPJ') || '{}');
+        document.getElementById('riscoLiquidez').value = dados.liquidez || 'medio';
+        document.getElementById('riscoCredito').value = dados.credito || 'medio';
+        document.getElementById('riscoMercado').value = dados.mercado || 'baixo';
+        document.getElementById('riscoOperacional').value = dados.operacional || 'medio';
+        document.getElementById('planoMitigacao').value = dados.mitigacao || '';
+    }
+
+    document.getElementById('formRiscosPJ')?.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const dados = {
+            liquidez: document.getElementById('riscoLiquidez').value,
+            credito: document.getElementById('riscoCredito').value,
+            mercado: document.getElementById('riscoMercado').value,
+            operacional: document.getElementById('riscoOperacional').value,
+            mitigacao: document.getElementById('planoMitigacao').value.trim()
+        };
+
+        localStorage.setItem('riscosPJ', JSON.stringify(dados));
+        window.atualizarDadosPJ();
+        alert('Dados de risco salvos com sucesso.');
+    });
+
+    document.getElementById('btnLimparRiscosPJ')?.addEventListener('click', function() {
+        localStorage.removeItem('riscosPJ');
+        preencherRiscoPJ();
+        window.atualizarDadosPJ();
+    });
+
+    preencherRiscoPJ();
+</script>
 </body>
 </html>
