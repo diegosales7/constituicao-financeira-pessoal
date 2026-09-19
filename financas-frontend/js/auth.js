@@ -101,6 +101,8 @@ function fazerLoginLocalPF(email, senha) {
     return null;
   }
 
+  const eDemo = usuario.email && usuario.email.toLowerCase() === DEMO_USER_PF.email.toLowerCase();
+
   const usuarioLogado = {
     nome: usuario.nome,
     email: usuario.email,
@@ -109,6 +111,7 @@ function fazerLoginLocalPF(email, senha) {
   };
 
   localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+  localStorage.setItem("modoDemo", eDemo ? "true" : "false");
   return usuarioLogado;
 }
 
@@ -125,7 +128,7 @@ function tentarLoginDemoPFSeHabilitado() {
     return false;
   }
 
-  const loginLocal = fazerLoginLocalPF(DEMO_USER_PF.email, DEMO_USER_PF.senha);
+  const loginLocal = logarUsuarioDemoPF();
 
   if (loginLocal) {
     setTimeout(function() {

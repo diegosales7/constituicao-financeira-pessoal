@@ -6,7 +6,7 @@
 
     <title>Dashboard - Constituição Financeira</title>
 
-    <link rel="stylesheet" href="CSS/style.css?v=2">
+    <link rel="stylesheet" href="CSS/style.css?v=4">
 </head>
 <body>
 
@@ -14,7 +14,7 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            💰 Constituição Financeira
+             Constituição Financeira
             <span>Reforma Constitucional de Liquidez</span>
         </div>
 
@@ -41,7 +41,7 @@
     <main class="main-content">
 
         <section class="dashboard-hero pf-hero">
-            <div class="pf-hero-badge">VERSÃO CONSOLIDADA</div>
+            <div class="pf-hero-badge">VERSO CONSOLIDADA</div>
             <h1>Constituição Financeira Pessoal</h1>
             <p>
                 Sistema de organização financeira baseado na Reforma Constitucional de Domínio.
@@ -185,7 +185,7 @@
       if (emergencia.ativo) {
         resumo.className = "status-box emergency-active";
         resumo.innerHTML = `
-          🚨 <strong>Estado de Emergência Financeira ativo</strong><br>
+           <strong>Estado de Emergência Financeira ativo</strong><br>
           Origem: ${emergencia.origem}<br>
           Motivo: ${emergencia.motivo}<br>
           TFP: ${emergencia.tfp ? percentual(emergencia.tfp) : "Não informado"}<br>
@@ -196,10 +196,10 @@
       } else {
         resumo.className = "status-box emergency-inactive";
         resumo.innerHTML = `
-          ✅ <strong>Estado de Emergência inativo</strong><br>
+           <strong>Estado de Emergência inativo</strong><br>
           Estado financeiro atual: ${gatilho.nome}<br>
           Total de despesas registradas: ${moeda(totalDespesas)}<br>
-          Último TFP: ${ultimoTFP ? percentual(ultimoTFP.tfp) + " - " + ultimoTFP.classificacao : "Ainda não calculado"}
+          ltimo TFP: ${ultimoTFP ? percentual(ultimoTFP.tfp) + " - " + ultimoTFP.classificacao : "Ainda não calculado"}
         `;
       }
     }

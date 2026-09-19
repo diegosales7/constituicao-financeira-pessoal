@@ -6,7 +6,7 @@
 
     <title>Termômetro Financeiro - Constituição Financeira</title>
 
-    <link rel="stylesheet" href="CSS/style.css?v=2">
+    <link rel="stylesheet" href="CSS/style.css?v=4">
 </head>
 <body>
 
@@ -14,34 +14,34 @@
 
     <aside class="sidebar">
         <div class="sidebar-logo">
-            💰 Constituição Financeira
+             Constituição Financeira
             <span>TFP mensal</span>
         </div>
 
         <nav class="sidebar-nav">
-            <a href="dashboard.html">📊 Dashboard</a>
-            <a href="perfil.html">👤 Perfil</a>
-            <a href="receitas.html">💵 Receitas</a>
-            <a href="despesas.html">💸 Despesas</a>
-            <a href="transacoes.html">📒 Transações</a>
-            <a href="cartoes.html">💳 Cartões</a>
-            <a href="termometro.html" class="active">🌡️ Termômetro</a>
-            <a href="fluxo-caixa.html">📊 Fluxo de Caixa</a>
-            <a href="emergencia.html">🚨 Emergência</a>
-            <a href="reserva-flex.html">🛡️ Reserva Flex</a>
-            <a href="ocorrencias.html">📘 Ocorrências</a>
-            <a href="ativos.html">📈 Ativos</a>
-            <a href="constituicao.html">📜 Constituição</a>
-            <a href="simulacao.html">🧮 Simulação</a>
-            <a href="sobre.html">ℹ️ Sobre</a>
-            <a href="index.html" class="logout-link">🚪 Sair</a>
+            <a href="dashboard.html"> Dashboard</a>
+            <a href="perfil.html"> Perfil</a>
+            <a href="receitas.html"> Receitas</a>
+            <a href="despesas.html"> Despesas</a>
+            <a href="transacoes.html"> Transações</a>
+            <a href="cartoes.html"> Cartões</a>
+            <a href="termometro.html" class="active">️ Termômetro</a>
+            <a href="fluxo-caixa.html"> Fluxo de Caixa</a>
+            <a href="emergencia.html"> Emergência</a>
+            <a href="reserva-flex.html">️ Reserva Flex</a>
+            <a href="ocorrencias.html"> Ocorrências</a>
+            <a href="ativos.html"> Ativos</a>
+            <a href="constituicao.html"> Constituição</a>
+            <a href="simulacao.html"> Simulação</a>
+            <a href="sobre.html">️ Sobre</a>
+            <a href="index.html" class="logout-link"> Sair</a>
         </nav>
     </aside>
 
     <main class="main-content">
 
         <header class="page-header">
-            <h1>🌡️ Termômetro Financeiro Pessoal</h1>
+            <h1>️ Termômetro Financeiro Pessoal</h1>
             <p>Calcule separadamente a dimensão comportamental, numérica e o TFP final.</p>
         </header>
 
@@ -50,7 +50,7 @@
             <div class="image-card">
                 <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80" alt="Controle financeiro">
                 <div class="image-card-content">
-                    <h3>🌡️ Medição mensal</h3>
+                    <h3>️ Medição mensal</h3>
                     <p>Calcule o TFP entre os dias 5 e 10 do mês.</p>
                 </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="image-card">
                 <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=900&q=80" alt="Análise financeira">
                 <div class="image-card-content">
-                    <h3>📈 Fluxo de caixa</h3>
+                    <h3> Fluxo de caixa</h3>
                     <p>Receita total menos despesas totais.</p>
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <div class="image-card">
                 <img src="https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&w=900&q=80" alt="Relatório financeiro">
                 <div class="image-card-content">
-                    <h3>🚨 Emergência</h3>
+                    <h3> Emergência</h3>
                     <p>Ativada automaticamente quando o TFP fica abaixo de 40%.</p>
                 </div>
             </div>
@@ -74,7 +74,7 @@
         </section>
 
         <section class="card">
-            <h2>🧠 Dimensão Comportamental</h2>
+            <h2> Dimensão Comportamental</h2>
             <p>
                 Responda as 3 perguntas abaixo e clique no botão para ver o resultado comportamental.
             </p>
@@ -83,7 +83,7 @@
 
             <div class="grid grid-3">
                 <div class="form-group">
-                    <label>💸 Está sobrando dinheiro no mês?</label>
+                    <label> Está sobrando dinheiro no mês?</label>
                     <select id="sobraDinheiro">
                         <option value="sim">Sim</option>
                         <option value="nao">Não</option>
@@ -91,7 +91,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>💳 Está usando crédito para fechar o mês?</label>
+                    <label> Está usando crédito para fechar o mês?</label>
                     <select id="usaCredito">
                         <option value="nao">Não</option>
                         <option value="sim">Sim</option>
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>📉 A renda está estável ou previsível?</label>
+                    <label> A renda está estável ou previsível?</label>
                     <select id="rendaEstavel">
                         <option value="sim">Sim</option>
                         <option value="nao">Não</option>
@@ -108,14 +108,14 @@
             </div>
 
             <button class="btn btn-secondary" type="button" onclick="calcularSomenteComportamental()">
-                🧠 Calcular Resultado Comportamental
+                 Calcular Resultado Comportamental
             </button>
 
             <div id="resultadoComportamental" style="display:none; margin-top:20px;"></div>
         </section>
 
         <section class="card">
-            <h2>📈 Dimensão Numérica</h2>
+            <h2> Dimensão Numérica</h2>
             <p>
                 Informe a receita e despesa do mês ou use os valores já registrados no sistema.
             </p>
@@ -136,11 +136,11 @@
 
             <div class="actions">
                 <button class="btn btn-outline" type="button" onclick="preencherComDadosRegistrados()">
-                    📊 Usar receitas/despesas registradas
+                     Usar receitas/despesas registradas
                 </button>
 
                 <button class="btn btn-primary" type="button" onclick="executarCalculoTFP()">
-                    🌡️ Calcular TFP Final
+                    ️ Calcular TFP Final
                 </button>
             </div>
         </section>
@@ -191,7 +191,7 @@
           <div class="stat-card">
             <div class="stat-label">Classificação Comportamental</div>
             <div class="stat-value">
-              ${resultado.score >= 80 ? "🟢 Bom" : resultado.score >= 40 ? "🟡 Atenção" : "🔴 Crítico"}
+              ${resultado.score >= 80 ? " Bom" : resultado.score >= 40 ? " Atenção" : " Crítico"}
             </div>
             <div class="stat-helper">Resultado qualitativo do mês</div>
           </div>
@@ -276,12 +276,12 @@
         </div>
 
         <div class="card">
-          <h3>🧠 Resultado da Dimensão Comportamental</h3>
+          <h3> Resultado da Dimensão Comportamental</h3>
           ${montarResultadoComportamentalHTML(resultadoComportamental)}
         </div>
 
         <div class="alert alert-info">
-          <strong>📈 Resultado Numérico</strong><br>
+          <strong> Resultado Numérico</strong><br>
           Receita total: ${moeda(resultado.receitaTotal)}<br>
           Despesas totais: ${moeda(resultado.despesasTotais)}<br>
           Fluxo de caixa: ${moeda(resultado.fluxo)}<br>
@@ -291,8 +291,8 @@
 
         <div class="alert alert-${resultado.emergenciaAtiva ? "danger" : "success"}">
           ${resultado.emergenciaAtiva
-            ? "🚨 Estado de Emergência ativado automaticamente."
-            : "✅ Estado de Emergência não ativado."}
+            ? " Estado de Emergência ativado automaticamente."
+            : " Estado de Emergência não ativado."}
         </div>
       `;
     }

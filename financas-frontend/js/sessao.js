@@ -214,6 +214,8 @@ function mostrarUsuarioNaSidebar() {
     ? obterEstadoEmergencia()
     : { ativo: false };
 
+  const demoAtivo = modoDemoAtivo();
+
   const caixaUsuario = document.createElement("div");
   caixaUsuario.classList.add("sidebar-user");
 
@@ -239,6 +241,13 @@ function mostrarUsuarioNaSidebar() {
         ${emergencia.ativo ? "Ativa" : "Inativa"}
       </div>
     </div>
+
+    <div class="sidebar-state">
+      <div class="sidebar-state-label">Modo de teste</div>
+      <div class="sidebar-state-value ${demoAtivo ? "state-normal" : "state-danger"}">
+        ${demoAtivo ? "Ativo" : "Inativo"}
+      </div>
+    </div>
   `;
 
   const perfilPj = `
@@ -255,6 +264,13 @@ function mostrarUsuarioNaSidebar() {
     <div class="sidebar-state">
       <div class="sidebar-state-label">Ambiente</div>
       <div class="sidebar-state-value">Empresa</div>
+    </div>
+
+    <div class="sidebar-state">
+      <div class="sidebar-state-label">Modo de teste</div>
+      <div class="sidebar-state-value ${demoAtivo ? "state-normal" : "state-danger"}">
+        ${demoAtivo ? "Ativo" : "Inativo"}
+      </div>
     </div>
   `;
 

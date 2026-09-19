@@ -1,5 +1,5 @@
 // ============================================
-// VARIÁVEIS GLOBAIS
+// VARIVEIS GLOBAIS
 // ============================================
 const API_BASE = "http://localhost:10000";
 let currentProfile = null;
@@ -8,12 +8,12 @@ let financialEditMode = false;
 let constitutionalMode = false;
 
 // ============================================
-// INICIALIZAÇÃO
+// INICIALIZAO
 // ============================================
 document.addEventListener("DOMContentLoaded", function() {
     const token = localStorage.getItem("token");
     if (!token) {
-        alert("Token não encontrado! Redirecionando para login...");
+        alert("Token no encontrado! Redirecionando para login...");
         window.location.href = "index.html";
         return;
     }
@@ -70,7 +70,7 @@ function displayProfile(profile) {
     document.getElementById("display-meta").textContent =
         profile.metaAnual ? `R$ ${formatMoney(profile.metaAnual)}` : "-";
 
-    // Preencher campos de edição
+    // Preencher campos de edio
     document.getElementById("input-firstName").value = profile.firstName || "";
     document.getElementById("input-lastName").value = profile.lastName || "";
     document.getElementById("input-age").value = profile.age || "";
@@ -81,7 +81,7 @@ function displayProfile(profile) {
     document.getElementById("input-renda").value = profile.rendaMensal || "";
     document.getElementById("input-meta").value = profile.metaAnual || "";
 
-    // Dados de Constituição (se existente)
+    // Dados de Constituio (se existente)
     if (profile.investmentPercent) {
         displayConstmoney(profile);
     } else {
@@ -91,7 +91,7 @@ function displayProfile(profile) {
 }
 
 // ============================================
-// EXIBIR CONSTITUIÇÃO FINANCEIRA
+// EXIBIR CONSTITUIO FINANCEIRA
 // ============================================
 function displayConstmoney(profile) {
     document.getElementById("const-investment").textContent = (profile.investmentPercent || 0) + "%";
@@ -109,7 +109,7 @@ function displayConstmoney(profile) {
     document.getElementById("res-progress").style.width = (profile.reservePercent || 0) + "%";
     document.getElementById("tax-progress").style.width = (profile.taxPercent || 0) + "%";
 
-    // Preencher campos de edição
+    // Preencher campos de edio
     document.getElementById("input-inv-percent").value = profile.investmentPercent || 30;
     document.getElementById("input-res-percent").value = profile.reservePercent || 10;
     document.getElementById("input-tax-percent").value = profile.taxPercent || 5;
@@ -157,7 +157,7 @@ function toggleConstitutionMode() {
 }
 
 // ============================================
-// SALVAR INFORMAÇÕES PESSOAIS
+// SALVAR INFORMAES PESSOAIS
 // ============================================
 function savePersonalInfo() {
     const token = localStorage.getItem("token");
@@ -184,7 +184,7 @@ function savePersonalInfo() {
         return res.json();
     })
     .then(() => {
-        showAlert("Informações pessoais atualizadas com sucesso!", "success");
+        showAlert("Informaes pessoais atualizadas com sucesso!", "success");
         toggleEditMode();
         loadCompleteProfile();
     })
@@ -194,7 +194,7 @@ function savePersonalInfo() {
 }
 
 // ============================================
-// SALVAR INFORMAÇÕES FINANCEIRAS
+// SALVAR INFORMAES FINANCEIRAS
 // ============================================
 function saveFinancialInfo() {
     const token = localStorage.getItem("token");
@@ -221,7 +221,7 @@ function saveFinancialInfo() {
         return res.json();
     })
     .then(() => {
-        showAlert("Informações financeiras atualizadas com sucesso!", "success");
+        showAlert("Informaes financeiras atualizadas com sucesso!", "success");
         toggleFinancialMode();
         loadCompleteProfile();
     })
@@ -231,7 +231,7 @@ function saveFinancialInfo() {
 }
 
 // ============================================
-// SETUP CONSTITUIÇÃO
+// SETUP CONSTITUIO
 // ============================================
 function setupConstituition() {
     const token = localStorage.getItem("token");
@@ -275,7 +275,7 @@ function setupConstituition() {
         return res.json();
     })
     .then(() => {
-        showAlert("Constituição configurada com sucesso!", "success");
+        showAlert("Constituio configurada com sucesso!", "success");
         toggleConstitutionMode();
         loadCompleteProfile();
     })
@@ -292,7 +292,7 @@ function simulate() {
     const income = document.getElementById("simulate-income").value;
 
     if (!income || parseFloat(income) <= 0) {
-        showAlert("Por favor, insira uma renda válida", "error");
+        showAlert("Por favor, insira uma renda vlida", "error");
         return;
     }
 
@@ -304,15 +304,15 @@ function simulate() {
         }
     })
     .then(res => {
-        if (!res.ok) throw new Error("Erro na simulação");
+        if (!res.ok) throw new Error("Erro na simulao");
         return res.json();
     })
     .then(data => {
         displaySimulationResult(data);
-        showAlert("Simulação realizada com sucesso!", "success");
+        showAlert("Simulao realizada com sucesso!", "success");
     })
     .catch(err => {
-        showAlert("Erro na simulação: " + err.message, "error");
+        showAlert("Erro na simulao: " + err.message, "error");
     });
 }
 
@@ -349,7 +349,7 @@ function logout() {
 }
 
 // ============================================
-// UTILITÁRIOS
+// UTILITRIOS
 // ============================================
 function formatMoney(value) {
     if (!value) return "0,00";
