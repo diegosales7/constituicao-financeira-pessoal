@@ -69,9 +69,12 @@
     const params = new URLSearchParams(window.location.search);
     const context = params.get('context');
     const authCard = document.getElementById('authCard');
+    const basePath = window.location.pathname.includes('/')
+        ? window.location.pathname.slice(0, window.location.pathname.lastIndexOf('/') + 1)
+        : '/';
 
     if (context === 'pj') {
-        window.location.href = 'login-pj.html';
+        window.location.assign(`${basePath}login-pj.html`);
         return;
     }
 

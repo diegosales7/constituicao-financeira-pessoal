@@ -109,17 +109,34 @@ function modoDemoAtivo() {
   return localStorage.getItem("modoDemo") === "true";
 }
 
+function resolveAppBasePathSessao() {
+  const pathname = window.location.pathname || '/';
+  const lastSlash = pathname.lastIndexOf('/');
+
+  if (lastSlash <= 0) {
+    return '/';
+  }
+
+  return pathname.substring(0, lastSlash + 1);
+}
+
+function irParaPaginaSessao(page) {
+  const basePath = resolveAppBasePathSessao();
+  const alvo = page.startsWith('/') ? page : `${basePath}${page}`;
+  window.location.assign(alvo);
+}
+
 function protegerPagina() {
   const usuario = obterUsuarioLogado();
 
   if (modoDemoAtivo() && !usuario) {
     const pagina = paginaAtual();
     if (pagina === "login.html") {
-      window.location.href = "dashboard.html";
+      irParaPaginaSessao("dashboard.html");
       return;
     }
     if (pagina === "login-pj.html") {
-      window.location.href = "empresa.html";
+      irParaPaginaSessao("empresa.html");
       return;
     }
   }
@@ -128,12 +145,12 @@ function protegerPagina() {
     const pagina = paginaAtual();
 
     if (usuario.tipo === "pf" && (pagina === "index.html" || pagina === "login-pj.html" || pagina === "cadastro-pj.html" || pagina === "login.html" || pagina === "cadastro.html")) {
-      window.location.href = "dashboard.html";
+      irParaPaginaSessao("dashboard.html");
       return;
     }
 
     if (usuario.tipo === "pj" && (pagina === "index.html" || pagina === "login.html" || pagina === "cadastro.html" || pagina === "login-pj.html" || pagina === "cadastro-pj.html")) {
-      window.location.href = "empresa.html";
+      irParaPaginaSessao("empresa.html");
       return;
     }
   }
@@ -144,32 +161,32 @@ function protegerPagina() {
   }
 
   if (!usuario) {
-    window.location.href = "index.html";
+    irParaPaginaSessao("index.html");
     return;
   }
 
   if (usuario.tipo === "pj" && ePaginaPf()) {
-    window.location.href = "empresa.html";
+    irParaPaginaSessao("empresa.html");
     return;
   }
 
   if (usuario.tipo === "pf" && ePaginaPj()) {
-    window.location.href = "dashboard.html";
+    irParaPaginaSessao("dashboard.html");
     return;
   }
 
   if (usuario.tipo === "pj" && !ePaginaPj() && !ePaginaLivre()) {
-    window.location.href = "empresa.html";
+    irParaPaginaSessao("empresa.html");
     return;
   }
 
   if (usuario.tipo === "pf" && !ePaginaPf() && !ePaginaLivre()) {
-    window.location.href = "dashboard.html";
+    irParaPaginaSessao("dashboard.html");
     return;
   }
 
   if (usuario.tipo !== "pf" && usuario.tipo !== "pj") {
-    window.location.href = "index.html";
+    irParaPaginaSessao("index.html");
     return;
   }
 

@@ -39,6 +39,23 @@ function garantirUsuarioDemoPF() {
   return DEMO_USER_PF;
 }
 
+function resolveAppBasePath() {
+  const pathname = window.location.pathname || "/";
+  const lastSlash = pathname.lastIndexOf("/");
+
+  if (lastSlash <= 0) {
+    return "/";
+  }
+
+  return pathname.substring(0, lastSlash + 1);
+}
+
+function irParaPagina(page) {
+  const basePath = resolveAppBasePath();
+  const alvo = page.startsWith("/") ? page : `${basePath}${page}`;
+  window.location.assign(alvo);
+}
+
 function logarUsuarioDemoPF() {
   const usuarioLogado = {
     nome: DEMO_USER_PF.nome,
@@ -47,8 +64,13 @@ function logarUsuarioDemoPF() {
     tipo: "pf"
   };
 
-  localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
-  localStorage.setItem("modoDemo", "true");
+  try {
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuarioLogado));
+    localStorage.setItem("modoDemo", "true");
+  } catch (error) {
+    console.error("Não foi possível gravar sessão demo PF:", error);
+  }
+
   return usuarioLogado;
 }
 
@@ -107,7 +129,7 @@ function tentarLoginDemoPFSeHabilitado() {
 
   if (loginLocal) {
     setTimeout(function() {
-      window.location.href = "dashboard.html";
+      irParaPagina("dashboard.html");
     }, 200);
     return true;
   }
@@ -233,9 +255,9 @@ if (formLogin) {
       const params = new URLSearchParams(window.location.search);
       const context = params.get('context');
       const destino = context === 'pj' ? 'empresa.html' : 'dashboard.html';
-
+ 
       setTimeout(function() {
-        window.location.href = destino;
+        irParaPagina(destino);
       }, 600);
 
     } catch (error) {
@@ -243,7 +265,7 @@ if (formLogin) {
         logarUsuarioDemoPF();
         mostrarMensagem("mensagemLogin", "Login de demonstração realizado com sucesso!", "success");
         setTimeout(function() {
-          window.location.href = "dashboard.html";
+          irParaPagina("dashboard.html");
         }, 600);
         return;
       }
@@ -254,7 +276,7 @@ if (formLogin) {
         localStorage.setItem("modoDemo", "false");
         mostrarMensagem("mensagemLogin", "Login local realizado com sucesso!", "success");
         setTimeout(function() {
-          window.location.href = "dashboard.html";
+          irParaPagina("dashboard.html");
         }, 600);
         return;
       }

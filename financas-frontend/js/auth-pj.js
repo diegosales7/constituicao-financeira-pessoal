@@ -24,6 +24,23 @@ function garantirEmpresaDemoPj() {
   return JSON.parse(localStorage.getItem('empresaPJ') || JSON.stringify(DEMO_USER_PJ));
 }
 
+function resolveAppBasePathPj() {
+  const pathname = window.location.pathname || '/';
+  const lastSlash = pathname.lastIndexOf('/');
+
+  if (lastSlash <= 0) {
+    return '/';
+  }
+
+  return pathname.substring(0, lastSlash + 1);
+}
+
+function irParaPaginaPj(page) {
+  const basePath = resolveAppBasePathPj();
+  const alvo = page.startsWith('/') ? page : `${basePath}${page}`;
+  window.location.assign(alvo);
+}
+
 function logarUsuarioDemoPj() {
   const empresa = garantirEmpresaDemoPj();
   const usuarioLogado = {
@@ -33,8 +50,13 @@ function logarUsuarioDemoPj() {
     empresa: empresa.razaoSocial || 'Empresa PJ'
   };
 
-  localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
-  localStorage.setItem('modoDemo', 'true');
+  try {
+    localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+    localStorage.setItem('modoDemo', 'true');
+  } catch (error) {
+    console.error('Não foi possível gravar sessão demo PJ:', error);
+  }
+
   return usuarioLogado;
 }
 
@@ -175,7 +197,7 @@ function tentarLoginDemoPjSeHabilitado() {
   logarUsuarioDemoPj();
 
   setTimeout(function () {
-    window.location.href = 'empresa.html';
+    irParaPaginaPj('empresa.html');
   }, 200);
 
   return true;
@@ -348,7 +370,7 @@ if (formLoginPj) {
       mostrarMensagemPj('mensagemLogin', 'Login de demonstração realizado com sucesso!', 'success');
 
       setTimeout(function () {
-        window.location.href = 'empresa.html';
+        irParaPaginaPj('empresa.html');
       }, 700);
       return;
     }
@@ -365,7 +387,7 @@ if (formLoginPj) {
       mostrarMensagemPj('mensagemLogin', 'Login realizado com sucesso!', 'success');
 
       setTimeout(function () {
-        window.location.href = 'empresa.html';
+        irParaPaginaPj('empresa.html');
       }, 700);
     } else {
       mostrarMensagemPj('mensagemLogin', 'E-mail ou senha inválidos para o ambiente PJ.', 'error');
